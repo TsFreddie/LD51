@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public struct InputState
@@ -20,8 +21,13 @@ public struct FrameInput
 public class GameManager : MonoBehaviour
 {
     public FrameInput[] InputRecording;
+
     public static GameManager Instance { get; private set; }
+
+    public InputState LastInput { get; private set; }
     public InputState CurrentInput { get; private set; }
+
+    public Action OnFixedUpdate;
 
     public void Awake()
     {
@@ -40,6 +46,22 @@ public class GameManager : MonoBehaviour
 
     public void FixedUpdate()
     {
-        
+        LastInput = CurrentInput;
+        CurrentInput = new InputState
+        {
+            Move = (Input.GetKey(KeyCode.D) ? 1 : 0) + (Input.GetKey(KeyCode.A) ? -1 : 0),
+            Jump = Input.GetKey(KeyCode.Space),
+        };
+
+        OnFixedUpdate?.Invoke();
+    }
+
+    public FrameInput FetchInput()
+    {
+        return new FrameInput()
+        {
+            LastFrame = LastInput,
+            CurrentFrame = CurrentInput
+        };
     }
 }

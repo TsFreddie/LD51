@@ -26,6 +26,11 @@ public class PlayerControl : MonoBehaviour
 
     private Vector3 _lastPosition;
     private float _currentHorizontalSpeed, _currentVerticalSpeed;
+
+    protected void Awake()
+    {
+        GameManager.Instance.OnFixedUpdate += Process;
+    }
     
     private void Process()
     {
@@ -34,7 +39,7 @@ public class PlayerControl : MonoBehaviour
         Velocity = (position - _lastPosition) / Time.fixedDeltaTime;
         _lastPosition = position;
 
-        // GatherInput();
+        Input = GameManager.Instance.FetchInput();
 
         if (Input.JumpDown)
         {
