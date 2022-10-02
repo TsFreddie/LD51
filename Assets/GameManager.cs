@@ -163,5 +163,6 @@ public class GameManager : MonoBehaviour
     public void IsDied(bool died)
     {
         Died = died;
+        Debug.Log("Died");
     }
 }

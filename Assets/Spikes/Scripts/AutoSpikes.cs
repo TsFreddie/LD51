@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class AutoSpikes : MonoBehaviour
 {
@@ -11,20 +12,24 @@ public class AutoSpikes : MonoBehaviour
     private Collider2D autoTrapColl;
     private List<Collider2D> _colliders;
 
-    private Transform target;
+    private Transform spike;
+    private Vector2 target;
 
     // Start is called before the first frame update
     void Start()
     {
-        autoTrapColl = GetComponent<PolygonCollider2D>();
+        autoTrapColl = GetComponent<BoxCollider2D>();
         _colliders = new List<Collider2D>();
+        spike = transform.GetChild(0).transform;
 
-        var ChildCollider = transform.GetComponentInChildren<BoxCollider2D>();
+        target = Vector2.zero;
+        var ChildCollider = spike.GetComponent<BoxCollider2D>();
         
         ChildCollider.size = new Vector2(ChildCollider.size.x, spikesHeight);
-        ChildCollider.transform.position = new Vector3(0, -(0.5f+(spikesHeight/2)), 0);
+        spike.position = transform.TransformPoint(new Vector3(0, -(0.5f+(spikesHeight/2)), 0));
 
-        target.position = new Vector2(0, (spikesHeight / 2) - 0.5f);
+        target = transform.TransformPoint(new Vector2(0, (spikesHeight / 2) - 0.5f));
+
     }
 
     // Update is called once per frame
@@ -45,16 +50,19 @@ public class AutoSpikes : MonoBehaviour
         {
             StartCoroutine(MoveChild(target));
         }
+        
     }
 
-    IEnumerator MoveChild(Transform target)
+    IEnumerator MoveChild(Vector2 target)
     {
-        while (Vector2.Distance(transform.position,target.position)>=0.01f)
+        while (Vector2.Distance(spike.position,target)>=0.01f)
         {
-            transform.position = Vector2.MoveTowards((transform.position), target.position, moveSpeed * Time.deltaTime);
+            spike.position = Vector2.MoveTowards((spike.position), target, moveSpeed * Time.deltaTime);
             yield return null;
         }
     }
-    
-    
+
+
+
+
 }
