@@ -165,4 +165,24 @@ public class GameManager : MonoBehaviour
         Died = died;
         Debug.Log("Died");
     }
+    
+    public void Transition(TransitionDestination.DestinationTag destinationTag)
+    {
+        TransitionDestination destination = null;
+
+        var entrances = FindObjectsOfType<TransitionDestination>();
+
+        for (int i = 0; i < entrances.Length; i++)
+        {
+            if (entrances[i].destinationTag == destinationTag)
+            {
+                destination = entrances[i];
+                break;
+            }
+        }
+
+        if (destination == null)  return;
+        Debug.Log(destination.transform.position);
+
+    }
 }
