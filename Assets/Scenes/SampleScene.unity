@@ -203,9 +203,9 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.034849953
+    x: 0.24864866
     y: 0
-    width: 0.9306228
+    width: 0.50330335
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
@@ -473,6 +473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72b63f4489ab72540922a822f96cb79f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Died: 0
 --- !u!4 &1108962439
 Transform:
   m_ObjectHideFlags: 0
@@ -611,7 +612,7 @@ GameObject:
   - component: {fileID: 1681716017}
   - component: {fileID: 1681716015}
   - component: {fileID: 1681716014}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}

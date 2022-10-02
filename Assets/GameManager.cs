@@ -29,6 +29,10 @@ public class GameManager : MonoBehaviour
 
     public Action OnFixedUpdate;
 
+    public Action OnFixedUpdateSpikes;
+
+    public bool Died = false;
+
     public void Awake()
     {
         if (Instance != null)
@@ -54,6 +58,8 @@ public class GameManager : MonoBehaviour
         };
 
         OnFixedUpdate?.Invoke();
+
+        OnFixedUpdateSpikes?.Invoke();
     }
 
     public FrameInput FetchInput()
@@ -63,5 +69,10 @@ public class GameManager : MonoBehaviour
             LastFrame = LastInput,
             CurrentFrame = CurrentInput
         };
+    }
+
+    public void IsDied(bool died)
+    {
+        Died = died;
     }
 }

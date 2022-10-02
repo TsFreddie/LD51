@@ -30,6 +30,7 @@ public class PlayerControl : MonoBehaviour
     protected void Awake()
     {
         GameManager.Instance.OnFixedUpdate += Process;
+        GameManager.Instance.OnFixedUpdateSpikes += Died;
     }
     
     private void Process()
@@ -54,8 +55,8 @@ public class PlayerControl : MonoBehaviour
         CalculateJump();     // Possibly overrides vertical
 
         MoveCharacter(); // Actually perform the axis movement
-    }
 
+    }
 
     //     #region Gather Input
     // private void GatherInput()
@@ -329,5 +330,23 @@ public class PlayerControl : MonoBehaviour
             positionToMoveTo = posToTry;
         }
     }
+        #endregion
+
+        private void Died()
+        {
+            var died = GameManager.Instance.Died;
+            if (died)
+            {
+                DiedCharacter();//Died
+            }
+        }
+
+        #region Died
+    
+    private void DiedCharacter()
+    {
+        Debug.Log("You Died!!!");
+    }
+    
         #endregion
 }
