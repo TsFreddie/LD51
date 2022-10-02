@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 
 public struct InputState
@@ -34,6 +35,8 @@ public class GameManager : MonoBehaviour
     public Animator StateAnimator;
     public InputState[] InputRecording;
 
+    public TMP_Text Timer;
+
     public static GameManager Instance { get; private set; }
 
     // public InputState LastInput { get; private set; }
@@ -45,15 +48,18 @@ public class GameManager : MonoBehaviour
     public Action OnFixedUpdate;
 
     public GameState State = GameState.Inactive;
-    
-    private static readonly int AnimAwaiting = Animator.StringToHash("Await");
-    private static readonly int AnimRecording = Animator.StringToHash("Record");
-    private static readonly int AnimReplaying = Animator.StringToHash("Replay");
-    private static readonly int AnimInactive = Animator.StringToHash("Inactive");
+
+    private static readonly int AnimInactiveToAwaiting = Animator.StringToHash("Inactive-Await");
+    private static readonly int AnimReplayingToRecording = Animator.StringToHash("Replay-Record");
+    private static readonly int AnimAwaitingToRecording = Animator.StringToHash("Await-Record");
+    private static readonly int AnimRecordingToReplaying = Animator.StringToHash("Record-Replay");
+    private static readonly int AnimReplayingToInactive = Animator.StringToHash("Replay-Inactive");
 
     public Action OnFixedUpdateSpikes;
     public bool Died = false;
+    private static readonly int ShaderStartColor = Shader.PropertyToID("_");
     public async void Awake()
+
     {
         if (Instance != null)
         {
@@ -71,6 +77,11 @@ public class GameManager : MonoBehaviour
         StartGame();
     }
 
+    protected void Update()
+    {
+        Timer.text = $"{Frame * Time.fixedDeltaTime:0.00}";
+    }
+
     public void StartGame()
     {
         if (State != GameState.Inactive)
@@ -78,9 +89,9 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("Game is not inactive, can not start game");
             return;
         }
-        
+
         State = GameState.Awaiting;
-        StateAnimator.SetTrigger(AnimAwaiting);
+        StateAnimator.Play(AnimInactiveToAwaiting);
     }
 
     public void FixedUpdate()
@@ -96,13 +107,13 @@ public class GameManager : MonoBehaviour
         {
             ResetWorld();
             State = GameState.Recording;
-            StateAnimator.SetTrigger(AnimRecording);
+            StateAnimator.Play(AnimAwaitingToRecording);
         }
 
         if (State == GameState.Replaying && CurrentInput.Active)
         {
             State = GameState.Recording;
-            StateAnimator.SetTrigger(AnimRecording);
+            StateAnimator.Play(AnimReplayingToRecording);
         }
 
         if (State == GameState.Recording)
@@ -116,8 +127,9 @@ public class GameManager : MonoBehaviour
             if (Frame == InputRecording.Length)
             {
                 ResetWorld();
+                if (State == GameState.Recording)
+                    StateAnimator.Play(AnimRecordingToReplaying);
                 State = GameState.Replaying;
-                StateAnimator.SetTrigger(AnimReplaying);
             }
         }
     }

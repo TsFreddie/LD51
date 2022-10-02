@@ -30,6 +30,8 @@ public class PlayerControl : MonoBehaviour
     }
 
     public BoxCollider2D Collider;
+    public SpriteRenderer Sprite;
+    public Animator Animator;
 
     [Header("Movement")]
     [SerializeField] private float _acceleration = 90.0f;
@@ -112,6 +114,12 @@ public class PlayerControl : MonoBehaviour
             _state.LastJumpFrame = game.Frame;
         }
 
+        if (input.Move > 0) Sprite.flipX = true;
+        else if (input.Move < 0) Sprite.flipX = false;
+        
+        if (input.Move != 0) Animator.Play("Running");
+        else Animator.Play("Idle");
+        
         // Collision detection
         bool RunDetection(RayRange range)
         {
