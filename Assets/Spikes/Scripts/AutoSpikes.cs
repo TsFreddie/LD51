@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -15,6 +16,12 @@ public class AutoSpikes : MonoBehaviour
     private Transform spike;
     private Vector2 target;
 
+    protected void Awake()
+    {
+        GameManager.Instance.OnFixedUpdateWorld += AutoSpikesUpdate;
+    }
+
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -38,7 +45,7 @@ public class AutoSpikes : MonoBehaviour
         
     }
     
-    private void FixedUpdate()
+    private void AutoSpikesUpdate()
     {
         autoTrapColl.OverlapCollider(new ContactFilter2D()
         {
@@ -62,7 +69,10 @@ public class AutoSpikes : MonoBehaviour
         }
     }
 
-
+    private void OnDestroy()
+    {
+        GameManager.Instance.OnFixedUpdateWorld -= AutoSpikesUpdate;
+    }
 
 
 }

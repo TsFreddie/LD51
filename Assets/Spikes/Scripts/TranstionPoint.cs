@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,15 +10,20 @@ public class TranstionPoint : MonoBehaviour
    
     private Collider2D stillTrapColl;
     private List<Collider2D> _colliders;
+    
+    protected void Awake()
+    {
+        GameManager.Instance.OnFixedUpdateWorld += TranstionUpdate;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        stillTrapColl = GetComponent<PolygonCollider2D>();
+        stillTrapColl = GetComponent<BoxCollider2D>();
         _colliders = new List<Collider2D>();
     }
     
-    private void FixedUpdate()
+    private void TranstionUpdate()
     {
         stillTrapColl.OverlapCollider(new ContactFilter2D()
         {
@@ -29,5 +35,10 @@ public class TranstionPoint : MonoBehaviour
         {
             GameManager.Instance.Transition(destinationTag);
         }
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.Instance.OnFixedUpdateWorld -= TranstionUpdate;
     }
 }

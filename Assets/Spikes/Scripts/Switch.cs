@@ -1,22 +1,24 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AutoSpikesChild : MonoBehaviour
+public class Switch : MonoBehaviour
 {
-    private Collider2D Child;
+    [Header("要触发的陷阱")]
+    public Switchable Target;
+
+    private Collider2D switchColl;
     private List<Collider2D> _colliders;
-    
+
     protected void Awake()
     {
-        GameManager.Instance.OnFixedUpdateWorld += SpikesChildUpdate;
+        GameManager.Instance.OnFixedUpdateWorld += SwitchUpdate;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        Child = GetComponent<BoxCollider2D>();
+        switchColl = GetComponent<BoxCollider2D>();
         _colliders = new List<Collider2D>();
     }
 
@@ -26,9 +28,9 @@ public class AutoSpikesChild : MonoBehaviour
         
     }
     
-    private void SpikesChildUpdate()
+    private void SwitchUpdate()
     {
-        Child.OverlapCollider(new ContactFilter2D()
+        switchColl.OverlapCollider(new ContactFilter2D()
         {
             useLayerMask = true,
             layerMask = LayerMask.GetMask("Player")
@@ -36,13 +38,13 @@ public class AutoSpikesChild : MonoBehaviour
         
         if (_colliders.Count > 0)
         {
-            GameManager.Instance.IsDied(true);
+            Target.Trigger();
         }
     }
 
 
     private void OnDestroy()
     {
-        GameManager.Instance.OnFixedUpdateWorld -= SpikesChildUpdate;
+        GameManager.Instance.OnFixedUpdateWorld -= SwitchUpdate;
     }
 }

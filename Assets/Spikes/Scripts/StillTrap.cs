@@ -7,6 +7,11 @@ public class StillTrap : MonoBehaviour
 {
     private Collider2D stillTrapColl;
     private List<Collider2D> _colliders;
+    
+    protected void Awake()
+    {
+        GameManager.Instance.OnFixedUpdateWorld += StillTrapUpdate;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +26,7 @@ public class StillTrap : MonoBehaviour
         
     }
     
-    private void FixedUpdate()
+    private void StillTrapUpdate()
     {
         stillTrapColl.OverlapCollider(new ContactFilter2D()
         {
@@ -33,5 +38,10 @@ public class StillTrap : MonoBehaviour
         {
             GameManager.Instance.IsDied(true);
         }
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.Instance.OnFixedUpdateWorld -= StillTrapUpdate;
     }
 }

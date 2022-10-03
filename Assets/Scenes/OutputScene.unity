@@ -1374,6 +1374,7 @@ MonoBehaviour:
   StateAnimator: {fileID: 99817640}
   Timer: {fileID: 682185445}
   State: 3
+  Died: 0
 --- !u!4 &1108962439
 Transform:
   m_ObjectHideFlags: 0

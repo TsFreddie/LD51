@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour
     private static readonly int AnimRecordingToReplaying = Animator.StringToHash("Record-Replay");
     private static readonly int AnimReplayingToInactive = Animator.StringToHash("Replay-Inactive");
 
-    public Action OnFixedUpdateSpikes;
+    public Action OnFixedUpdateWorld;
     public bool Died = false;
     private static readonly int ShaderStartColor = Shader.PropertyToID("_");
     public async void Awake()
@@ -144,7 +144,7 @@ public class GameManager : MonoBehaviour
     {
         OnFixedUpdate?.Invoke();
 
-        OnFixedUpdateSpikes?.Invoke();
+        OnFixedUpdateWorld?.Invoke();
         Frame++;
     }
 
