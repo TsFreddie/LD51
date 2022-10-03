@@ -1680,6 +1680,7 @@ MonoBehaviour:
   Slider: {fileID: 283573256}
   Track: {fileID: 439650033}
   State: 3
+  Died: 0
 --- !u!4 &1108962439
 Transform:
   m_ObjectHideFlags: 0

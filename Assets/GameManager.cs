@@ -61,6 +61,10 @@ public class GameManager : MonoBehaviour
     private static readonly int AnimRecordingToAwaiting = Animator.StringToHash("Record-Await");
     private static readonly int AnimReplayingToReplaying = Animator.StringToHash("Replay-Replay");
 
+    public Action OnFixedUpdateWorld;
+    public bool Died = false;
+    private static readonly int ShaderStartColor = Shader.PropertyToID("_");
+
     protected async void Awake()
     {
         if (Instance != null)
@@ -176,6 +180,8 @@ public class GameManager : MonoBehaviour
     private void StepFrame()
     {
         OnFixedUpdate?.Invoke();
+
+        OnFixedUpdateWorld?.Invoke();
         Frame++;
     }
 
@@ -189,5 +195,31 @@ public class GameManager : MonoBehaviour
             LastFrame = last,
             CurrentFrame = current,
         };
+    }
+
+    public void IsDied(bool died)
+    {
+        Died = died;
+        Debug.Log("Died");
+    }
+    
+    public void Transition(TransitionDestination.DestinationTag destinationTag)
+    {
+        TransitionDestination destination = null;
+
+        var entrances = FindObjectsOfType<TransitionDestination>();
+
+        for (int i = 0; i < entrances.Length; i++)
+        {
+            if (entrances[i].destinationTag == destinationTag)
+            {
+                destination = entrances[i];
+                break;
+            }
+        }
+
+        if (destination == null)  return;
+        Debug.Log(destination.transform.position);
+
     }
 }
