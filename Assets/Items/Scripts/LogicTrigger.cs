@@ -21,7 +21,8 @@ public class LogicTrigger : MonoBehaviour
     protected void Awake()
     {
         _collider = GetComponent<BoxCollider2D>();
-        _offSprite = SpriteRenderer.sprite;
+        if (SpriteRenderer != null)
+            _offSprite = SpriteRenderer.sprite;
         GameManager.Instance.OnReset += ResetSwitch;
         GameManager.Instance.OnFixedUpdateWorld += SwitchUpdate;
     }
@@ -35,8 +36,12 @@ public class LogicTrigger : MonoBehaviour
     private void ResetSwitch()
     {
         _collider.enabled = true;
-        SpriteRenderer.sprite = _offSprite;
-        SpriteRenderer.enabled = _offSprite != null;
+        if (SpriteRenderer != null)
+        {
+            SpriteRenderer.sprite = _offSprite;
+            SpriteRenderer.enabled = _offSprite != null;
+        }
+
     }
 
     private void SwitchUpdate()
@@ -57,8 +62,11 @@ public class LogicTrigger : MonoBehaviour
             {
                 if (Target != null)
                     Target.Trigger();
-                SpriteRenderer.sprite = OnSprite;
-                SpriteRenderer.enabled = OnSprite != null;
+                if (SpriteRenderer != null)
+                {
+                    SpriteRenderer.sprite = OnSprite;
+                    SpriteRenderer.enabled = OnSprite != null;
+                }
                 _triggered = true;
                 if (!string.IsNullOrEmpty(OnSound))
                     AudioManager.Instance.PlayAt(OnSound, transform);
@@ -71,8 +79,11 @@ public class LogicTrigger : MonoBehaviour
             {
                 if (Target != null)
                     Target.Untrigger();
-                SpriteRenderer.sprite = _offSprite;
-                SpriteRenderer.enabled = _offSprite != null;
+                if (SpriteRenderer != null)
+                {
+                    SpriteRenderer.sprite = _offSprite;
+                    SpriteRenderer.enabled = _offSprite != null;
+                }
                 if (!string.IsNullOrEmpty(OffSound))
                     AudioManager.Instance.PlayAt(OffSound, transform);
             }

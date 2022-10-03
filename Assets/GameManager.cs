@@ -54,6 +54,8 @@ public class GameManager : MonoBehaviour
 
     public Action OnReset;
     public Action OnFixedUpdate;
+    public Action OnFixedUpdateWorld;
+    public Action OnWorldStart;
 
     public GameState State = GameState.Inactive;
 
@@ -67,8 +69,7 @@ public class GameManager : MonoBehaviour
     private static readonly int AnimReplayingToReplaying = Animator.StringToHash("Replay-Replay");
     private static readonly int AnimInactive = Animator.StringToHash("Inactive");
 
-    public Action OnFixedUpdateWorld;
-    public bool Died = false;
+    private bool _died = false;
 
     private static readonly int ShaderEffectFactor = Shader.PropertyToID("_EffectFactor");
 
@@ -160,6 +161,7 @@ public class GameManager : MonoBehaviour
         HideSnapshot();
 
         SkipInput = false;
+        _died = false;
     }
 
     private bool _enterDown;
@@ -180,9 +182,10 @@ public class GameManager : MonoBehaviour
             if (Player != null) Player.StartVanish();
             ShowSnapshot();
             StateAnimator.Play(AnimAwaitingToRecording);
+            OnWorldStart?.Invoke();
         }
 
-        if (State == GameState.Replaying && _actionDown)
+        if (!_died && State == GameState.Replaying && _actionDown)
         {
             State = GameState.Recording;
             if (Player != null) Player.StartVanish();
@@ -214,6 +217,8 @@ public class GameManager : MonoBehaviour
                 }
                 else
                     StateAnimator.Play(AnimReplayingToReplaying);
+
+                OnWorldStart?.Invoke();
                 State = GameState.Replaying;
             }
         }
@@ -255,31 +260,6 @@ public class GameManager : MonoBehaviour
             LastFrame = last,
             CurrentFrame = current,
         };
-    }
-
-    public void IsDied(bool died)
-    {
-        Died = died;
-        Debug.Log("Died");
-    }
-
-    public void Transition(TransitionDestination.DestinationTag destinationTag)
-    {
-        TransitionDestination destination = null;
-
-        var entrances = FindObjectsOfType<TransitionDestination>();
-
-        for (int i = 0; i < entrances.Length; i++)
-        {
-            if (entrances[i].destinationTag == destinationTag)
-            {
-                destination = entrances[i];
-                break;
-            }
-        }
-
-        if (destination == null) return;
-        Debug.Log(destination.transform.position);
     }
 
     private bool _voidMode;
@@ -347,12 +327,15 @@ public class GameManager : MonoBehaviour
 
     public void Finish()
     {
+        if (_died) return;
         SkipInput = true;
     }
 
     public void Die()
     {
         SkipInput = true;
-        // TODO: add die icon
+        _died = true;
+
+        if (Player != null) Player.StartVanish();
     }
 }

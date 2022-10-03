@@ -59,11 +59,18 @@ public class PlayerControl : MonoBehaviour
     private PlayerState _state;
     private PlayerState _initState;
 
+    private bool _died;
     private bool _vanish;
     private float _vanishFactor;
 
-    public async void StartVanish()
+    public async void StartVanish(bool stopEverything = false)
     {
+        if (stopEverything)
+        {
+            _died = true;
+            Animator.enabled = false;
+        }
+
         _vanish = true;
         while (_vanish && _vanishFactor < 1f)
         {
@@ -150,6 +157,7 @@ public class PlayerControl : MonoBehaviour
         _state = _initState;
         transform.position = _state.Position;
         Sprite.flipX = _state.FaceRight;
+        _died = false;
         Animator.Play("Idle");
         Animator.SetBool("Running", false);
     }
@@ -160,7 +168,7 @@ public class PlayerControl : MonoBehaviour
         _initState.Position = transform.position;
         _initState.LastJumpFrame = int.MinValue;
         _initState.LastGroundFrame = int.MinValue;
-        
+
         if (onlyPosition)
         {
             _initState.Jumping = false;
@@ -172,6 +180,8 @@ public class PlayerControl : MonoBehaviour
 
     private void Process()
     {
+        if (_died) return;
+
         var t = transform;
         var lastPos = t.position;
 
