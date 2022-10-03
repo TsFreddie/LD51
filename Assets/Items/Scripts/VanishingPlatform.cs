@@ -39,6 +39,7 @@ public class VanishingPlatform : Switchable
             if (!_animated && deltaFrame > breakFrames - 2)
             {
                 _animated = true;
+                AudioManager.Instance.Play("vanishing_platform_break");
                 Animator.SetBool("Break", true);
             }
 
