@@ -24,9 +24,6 @@ public class Checkpoint : Switchable
 
     public override void Trigger()
     {
-        // Only finish the level if the checkpoint is active
-        if (GameManager.Instance.State != GameManager.GameState.Replaying) return;
-        
         GameManager.Instance.Checkpoint(this);
     }
 }

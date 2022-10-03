@@ -122,21 +122,6 @@ public class GameManager : MonoBehaviour
         HideSnapshot();
     }
 
-    public async void Checkpoint(Checkpoint checkpoint)
-    {
-        CheckpointProgress = checkpoint.CheckpointProgress;
-        CameraController.Instance.MoveToTarget(checkpoint.CameraPosition.position);
-        Player.SaveInitState();
-        LockWorld();
-
-        SetNormalMode();
-        if (Player != null) Player.CancelVanish();
-
-        await UniTask.Delay(1500);
-
-        ResetGame();
-    }
-
     public void LockWorld()
     {
         if (State == GameState.Replaying) StateAnimator.Play(AnimReplayingToInactive);
@@ -159,9 +144,6 @@ public class GameManager : MonoBehaviour
         SetVoidMode();
         if (Player != null) Player.CancelVanish();
         HideSnapshot();
-
-        SkipInput = false;
-        _died = false;
     }
 
     private bool _enterDown;
@@ -239,7 +221,9 @@ public class GameManager : MonoBehaviour
     private void ResetWorld()
     {
         Frame = 0;
+        _died = false;
         OnReset?.Invoke();
+        SkipInput = false;
     }
 
     private void StepFrame()
@@ -336,6 +320,33 @@ public class GameManager : MonoBehaviour
         SkipInput = true;
         _died = true;
 
-        if (Player != null) Player.StartVanish();
+        if (Player != null)
+        {
+            Player.StartVanish();
+            Player.LockPlayer();
+        }
+
+    }
+
+    public async void Checkpoint(Checkpoint checkpoint)
+    {
+        if (IsReplaying)
+        {
+            CheckpointProgress = checkpoint.CheckpointProgress;
+            CameraController.Instance.MoveToTarget(checkpoint.CameraPosition.position);
+            Player.SaveInitState();
+            LockWorld();
+
+            SetNormalMode();
+            if (Player != null) Player.CancelVanish();
+
+            await UniTask.Delay(1500);
+
+            ResetGame();
+
+        }
+
+        SkipInput = true;
+        Player.LockPlayer();
     }
 }

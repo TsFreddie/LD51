@@ -58,19 +58,20 @@ public class PlayerControl : MonoBehaviour
 
     private PlayerState _state;
     private PlayerState _initState;
+    private Sprite _initSprite;
 
-    private bool _died;
+    private bool _stopped;
     private bool _vanish;
     private float _vanishFactor;
 
-    public async void StartVanish(bool stopEverything = false)
+    public void LockPlayer()
     {
-        if (stopEverything)
-        {
-            _died = true;
-            Animator.enabled = false;
-        }
-
+        _stopped = true;
+        Animator.enabled = false;
+    }
+    
+    public async void StartVanish()
+    {
         _vanish = true;
         while (_vanish && _vanishFactor < 1f)
         {
@@ -114,6 +115,7 @@ public class PlayerControl : MonoBehaviour
         if (Sprite.flipX != _state.FaceRight)
             Sprite.flipX = _state.FaceRight;
         _initState = _state;
+        _initSprite = Sprite.sprite;
     }
 
     protected void OnDestroy()
@@ -157,7 +159,9 @@ public class PlayerControl : MonoBehaviour
         _state = _initState;
         transform.position = _state.Position;
         Sprite.flipX = _state.FaceRight;
-        _died = false;
+        _stopped = false;
+        Animator.enabled = true;
+        Sprite.sprite = _initSprite;
         Animator.Play("Idle");
         Animator.SetBool("Running", false);
     }
@@ -180,7 +184,7 @@ public class PlayerControl : MonoBehaviour
 
     private void Process()
     {
-        if (_died) return;
+        if (_stopped) return;
 
         var t = transform;
         var lastPos = t.position;
