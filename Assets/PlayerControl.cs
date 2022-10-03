@@ -23,6 +23,7 @@ public class PlayerControl : MonoBehaviour
         public Vector2 Position;
         public bool Jumping;
         public bool Landing;
+        public bool FaceRight;
         public int LastJumpFrame;
         public int LastGroundFrame;
         public bool Grounded;
@@ -100,6 +101,9 @@ public class PlayerControl : MonoBehaviour
     {
         _state = _initState;
         transform.position = _state.Position;
+        if (_state.FaceRight) Sprite.flipX = false;
+        else Sprite.flipX = true;
+        Animator.Play("Idle");
     }
 
     private void Process()
@@ -115,8 +119,8 @@ public class PlayerControl : MonoBehaviour
             _state.LastJumpFrame = game.Frame;
         }
 
-        if (input.Move > 0) Sprite.flipX = true;
-        else if (input.Move < 0) Sprite.flipX = false;
+        if (input.Move > 0) _state.FaceRight = Sprite.flipX = true;
+        else if (input.Move < 0) _state.FaceRight = Sprite.flipX = false;
 
         // Collision detection
         bool RunDetection(RayRange range)
@@ -260,12 +264,13 @@ public class PlayerControl : MonoBehaviour
         }
 
         t.position = pos - Collider.offset;
-        
+
         // Animation
         if (_state.Landing)
         {
             Animator.Play("Landing");
-        } else if (_state.Jumping)
+        }
+        else if (_state.Jumping)
         {
             Animator.Play("Prejump");
         }
