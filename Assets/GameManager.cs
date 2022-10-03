@@ -9,8 +9,6 @@ public struct InputState
 {
     public int Move;
     public bool Jump;
-
-    public bool Active => Move != 0 || Jump;
 }
 
 public struct FrameInput
@@ -45,6 +43,7 @@ public class GameManager : MonoBehaviour
     public PlayerControl Player;
     public SpriteRenderer PlayerSnapshot;
     public int CheckpointProgress { get; private set; }
+    public bool SkipInput { get; private set; }
 
     // public InputState LastInput { get; private set; }
     public InputState CurrentInput { get; private set; }
@@ -64,6 +63,7 @@ public class GameManager : MonoBehaviour
     private static readonly int AnimReplayingToAwaiting = Animator.StringToHash("Replay-Await");
     private static readonly int AnimRecordingToAwaiting = Animator.StringToHash("Record-Await");
     private static readonly int AnimReplayingToReplaying = Animator.StringToHash("Replay-Replay");
+    private static readonly int AnimInactive = Animator.StringToHash("Inactive");
 
     public Action OnFixedUpdateWorld;
     public bool Died = false;
@@ -98,6 +98,9 @@ public class GameManager : MonoBehaviour
         {
             ResetGame();
         }
+
+        _enterDown = Input.GetKeyDown(KeyCode.Return);
+        _actionDown = Input.GetKeyDown(KeyCode.Space) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A);
     }
 
     public void StartGame()
@@ -116,16 +119,33 @@ public class GameManager : MonoBehaviour
         HideSnapshot();
     }
 
-    public void SetCheckpoint(Checkpoint checkpoint)
+    public async void Checkpoint(Checkpoint checkpoint)
     {
         CheckpointProgress = checkpoint.CheckpointProgress;
         CameraController.Instance.MoveToTarget(checkpoint.CameraPosition.position);
         Player.SaveInitState();
+        LockWorld();
+
+        SetNormalMode();
+        if (Player != null) Player.CancelVanish();
+
+        await UniTask.Delay(1500);
+
         ResetGame();
+    }
+
+    public void LockWorld()
+    {
+        if (State == GameState.Replaying) StateAnimator.Play(AnimReplayingToInactive);
+        if (State == GameState.Recording) StateAnimator.Play(AnimInactive);
+        if (State == GameState.Awaiting) StateAnimator.Play(AnimInactive);
+        State = GameState.Inactive;
+        if (Player != null) Player.Animator.enabled = false;
     }
 
     public void ResetGame()
     {
+        if (Player != null) Player.Animator.enabled = true;
         Track.SpawnDropTrack(InputRecording, 0);
         for (var i = 0; i < InputRecording.Length; i++) InputRecording[i] = default;
         ResetWorld();
@@ -136,18 +156,22 @@ public class GameManager : MonoBehaviour
         SetVoidMode();
         if (Player != null) Player.CancelVanish();
         HideSnapshot();
+
+        SkipInput = false;
     }
+
+    private bool _enterDown;
+    private bool _actionDown;
 
     public void FixedUpdate()
     {
-        // LastInput = CurrentInput;
-        CurrentInput = new InputState
+        CurrentInput = !SkipInput ? new InputState
         {
             Move = (Input.GetKey(KeyCode.D) ? 1 : 0) + (Input.GetKey(KeyCode.A) ? -1 : 0),
             Jump = Input.GetKey(KeyCode.Space),
-        };
+        } : default;
 
-        if (State == GameState.Awaiting && CurrentInput.Active)
+        if (State == GameState.Awaiting && _actionDown)
         {
             ResetWorld();
             State = GameState.Recording;
@@ -156,7 +180,7 @@ public class GameManager : MonoBehaviour
             StateAnimator.Play(AnimAwaitingToRecording);
         }
 
-        if (State == GameState.Replaying && CurrentInput.Active)
+        if (State == GameState.Replaying && _actionDown)
         {
             State = GameState.Recording;
             if (Player != null) Player.StartVanish();
@@ -174,8 +198,9 @@ public class GameManager : MonoBehaviour
 
         if (State == GameState.Replaying || State == GameState.Recording)
         {
-            StepFrame();
-            if (Frame == InputRecording.Length)
+            if (!_enterDown)
+                StepFrame();
+            if (Frame == InputRecording.Length || _enterDown)
             {
                 ResetWorld();
                 if (State == GameState.Recording)
@@ -199,6 +224,9 @@ public class GameManager : MonoBehaviour
         {
             Track.UpdateTrack(InputRecording, (State == GameState.Recording) ? Frame : -1);
         }
+
+        _enterDown = false;
+        _actionDown = false;
     }
 
     private void ResetWorld()
@@ -310,9 +338,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     public void OnDestroy()
     {
         Shader.SetGlobalFloat(ShaderEffectFactor, 0);
+    }
+
+    public void Finish()
+    {
+        SkipInput = true;
+    }
+
+    public void Die()
+    {
+        SkipInput = true;
+        // TODO: add die icon
     }
 }

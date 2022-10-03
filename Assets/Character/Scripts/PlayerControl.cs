@@ -153,11 +153,21 @@ public class PlayerControl : MonoBehaviour
         Animator.Play("Idle");
         Animator.SetBool("Running", false);
     }
-    
-    public void SaveInitState()
+
+    public void SaveInitState(bool onlyPosition = true)
     {
         _initState = _state;
         _initState.Position = transform.position;
+        _initState.LastJumpFrame = int.MinValue;
+        _initState.LastGroundFrame = int.MinValue;
+        
+        if (onlyPosition)
+        {
+            _initState.Jumping = false;
+            _initState.Landing = false;
+            _initState.CoyoteUsable = false;
+            _initState.Velocity = Vector2.zero;
+        }
     }
 
     private void Process()
@@ -199,7 +209,11 @@ public class PlayerControl : MonoBehaviour
 
         // Ground
         _state.Landing = false;
-        if (_state.Grounded && !colDown) _state.LastGroundFrame = game.Frame; // Only trigger when first leaving
+        if (_state.Grounded && !colDown)
+        {
+            _state.LastGroundFrame = game.Frame; // Only trigger when first leaving
+            Animator.Play("Air");
+        }
         else if (!_state.Grounded && colDown)
         {
             _state.CoyoteUsable = true; // Only trigger when first touching

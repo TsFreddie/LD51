@@ -27,6 +27,6 @@ public class Checkpoint : Switchable
         // Only finish the level if the checkpoint is active
         if (GameManager.Instance.State != GameManager.GameState.Replaying) return;
         
-        GameManager.Instance.SetCheckpoint(this);
+        GameManager.Instance.Checkpoint(this);
     }
 }
