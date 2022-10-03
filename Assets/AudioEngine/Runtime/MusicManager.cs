@@ -30,6 +30,7 @@ public class MusicManager : MonoBehaviour
 
     private static MusicManager s_instance;
     private static bool s_initialized;
+    private static string s_playingKey;
 
     public static MusicManager Instance
     {
@@ -56,6 +57,8 @@ public class MusicManager : MonoBehaviour
 
     public void Play(string key, MusicFadeMode mode = MusicFadeMode.CrossFade, float fadeTime = 1.0f, bool cutInIfNotMusic = true)
     {
+        if (s_playingKey == key) return;
+        s_playingKey = key;
         if (!musicEmitter.IsValid() && cutInIfNotMusic)
         {
             musicEmitter = AudioManager.Instance.Play(key);
