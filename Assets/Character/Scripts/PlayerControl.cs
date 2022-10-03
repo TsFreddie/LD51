@@ -64,12 +64,14 @@ public class PlayerControl : MonoBehaviour
     private bool _vanish;
     private float _vanishFactor;
 
+    public Vector2 Velocity => _state.Velocity;
+
     public void LockPlayer()
     {
         _stopped = true;
         Animator.enabled = false;
     }
-    
+
     public async void StartVanish()
     {
         _vanish = true;
