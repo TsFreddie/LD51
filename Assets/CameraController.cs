@@ -22,20 +22,20 @@ public class CameraController : MonoBehaviour
 
     public void Update()
     {
-        var cameraPos = transform.position;
-        var targetPos = new Vector3(_targetPosition.x, _targetPosition.y, cameraPos.z);
-        cameraPos = Vector3.Lerp(cameraPos, targetPos, Time.deltaTime * 10.0f);
-        transform.position = cameraPos;
+        // var cameraPos = transform.position;
+        // var targetPos = new Vector3(_targetPosition.x, _targetPosition.y, cameraPos.z);
+        // cameraPos = Vector3.Lerp(cameraPos, targetPos, Time.deltaTime * 10.0f);
+        // transform.position = cameraPos;
     }
 
     public void SetRecordingMode()
     {
-        
+        Camera.enabled = false;
     }
 
     public void SetNormalMode()
     {
-        
+        Camera.enabled = true;
     }
 
     public void OnDestroy()

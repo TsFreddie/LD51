@@ -108,9 +108,9 @@ public class PlayerControl : MonoBehaviour
     {
         _state = _initState;
         transform.position = _state.Position;
-        if (_state.FaceRight) Sprite.flipX = false;
-        else Sprite.flipX = true;
+        Sprite.flipX = _state.FaceRight;
         Animator.Play("Idle");
+        Animator.SetBool("Running", false);
     }
 
     private void Process()

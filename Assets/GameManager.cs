@@ -113,7 +113,11 @@ public class GameManager : MonoBehaviour
         for (var i = 0; i < InputRecording.Length; i++) InputRecording[i] = default;
         ResetWorld();
         if (State == GameState.Inactive) StateAnimator.Play(AnimInactiveToAwaiting);
-        if (State == GameState.Recording) StateAnimator.Play(AnimRecordingToAwaiting);
+        if (State == GameState.Recording)
+        {
+            StateAnimator.Play(AnimRecordingToAwaiting);
+            CameraController.Instance.SetNormalMode();
+        }
         if (State == GameState.Replaying) StateAnimator.Play(AnimReplayingToAwaiting);
         State = GameState.Awaiting;
     }
@@ -131,12 +135,14 @@ public class GameManager : MonoBehaviour
         {
             ResetWorld();
             State = GameState.Recording;
+            CameraController.Instance.SetRecordingMode();
             StateAnimator.Play(AnimAwaitingToRecording);
         }
 
         if (State == GameState.Replaying && CurrentInput.Active)
         {
             State = GameState.Recording;
+            CameraController.Instance.SetRecordingMode();
             Track.SpawnDropTrack(InputRecording, Frame);
             for (var i = Frame; i < InputRecording.Length; i++) InputRecording[i] = default;
             StateAnimator.Play(AnimReplayingToRecording);
@@ -154,7 +160,10 @@ public class GameManager : MonoBehaviour
             {
                 ResetWorld();
                 if (State == GameState.Recording)
+                {
+                    CameraController.Instance.SetNormalMode();
                     StateAnimator.Play(AnimRecordingToReplaying);
+                }
                 else
                     StateAnimator.Play(AnimReplayingToReplaying);
                 State = GameState.Replaying;
@@ -202,7 +211,7 @@ public class GameManager : MonoBehaviour
         Died = died;
         Debug.Log("Died");
     }
-    
+
     public void Transition(TransitionDestination.DestinationTag destinationTag)
     {
         TransitionDestination destination = null;
@@ -218,7 +227,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (destination == null)  return;
+        if (destination == null) return;
         Debug.Log(destination.transform.position);
 
     }
