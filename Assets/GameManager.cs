@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     public PlayerControl Player;
     public SpriteRenderer PlayerSnapshot;
+    public int CheckpointProgress { get; private set; }
 
     // public InputState LastInput { get; private set; }
     public InputState CurrentInput { get; private set; }
@@ -113,6 +114,14 @@ public class GameManager : MonoBehaviour
         SetVoidMode();
         if (Player != null) Player.CancelVanish();
         HideSnapshot();
+    }
+
+    public void SetCheckpoint(Checkpoint checkpoint)
+    {
+        CheckpointProgress = checkpoint.CheckpointProgress;
+        CameraController.Instance.MoveToTarget(checkpoint.CameraPosition.position);
+        Player.SaveInitState();
+        ResetGame();
     }
 
     public void ResetGame()
@@ -286,7 +295,7 @@ public class GameManager : MonoBehaviour
         PlayerSnapshot.color = color;
         _snapshotOn = true;
     }
-    
+
     public async void HideSnapshot()
     {
         if (Player == null) return;

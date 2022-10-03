@@ -25,7 +25,7 @@ public class BulletSpikes : Switchable
         _colliders = new List<Collider2D>();
     }
     
-    public override  void Trigger()
+    public override void Trigger()
     {
         StartCoroutine(MoveChild(target.position));
     }

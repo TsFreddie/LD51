@@ -41,6 +41,7 @@ public class LogicTrigger : MonoBehaviour
 
     private void SwitchUpdate()
     {
+        if (!gameObject.activeSelf) return;
         if (!_collider.enabled) return;
 
         var result = _collider.OverlapColliderAll(new ContactFilter2D()
@@ -68,6 +69,8 @@ public class LogicTrigger : MonoBehaviour
             if (_triggered) _triggered = false;
             if (Repeatable)
             {
+                if (Target != null)
+                    Target.Untrigger();
                 SpriteRenderer.sprite = _offSprite;
                 SpriteRenderer.enabled = _offSprite != null;
                 if (!string.IsNullOrEmpty(OffSound))

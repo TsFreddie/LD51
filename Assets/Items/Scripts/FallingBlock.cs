@@ -8,7 +8,7 @@ public class FallingBlock  : Switchable
     
     public float waitTime = 1f;
  
-    public override  void Trigger()
+    public override void Trigger()
     {
         StartCoroutine(WaitTime(waitTime));
     }

@@ -99,7 +99,7 @@ public class PlayerControl : MonoBehaviour
     {
         GameManager.Instance.Player = this;
         GameManager.Instance.OnFixedUpdate += Process;
-        GameManager.Instance.OnReset += ResetInit;
+        GameManager.Instance.OnReset += ResetInitState;
         _state.LastJumpFrame = int.MinValue;
         _state.LastGroundFrame = int.MinValue;
         _state.Position = transform.position;
@@ -116,7 +116,7 @@ public class PlayerControl : MonoBehaviour
         if (GameManager.Instance.Player == this)
             GameManager.Instance.Player = null;
         GameManager.Instance.OnFixedUpdate -= Process;
-        GameManager.Instance.OnReset -= ResetInit;
+        GameManager.Instance.OnReset -= ResetInitState;
     }
 
     private void OnDrawGizmos()
@@ -145,13 +145,19 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    private void ResetInit()
+    private void ResetInitState()
     {
         _state = _initState;
         transform.position = _state.Position;
         Sprite.flipX = _state.FaceRight;
         Animator.Play("Idle");
         Animator.SetBool("Running", false);
+    }
+    
+    public void SaveInitState()
+    {
+        _initState = _state;
+        _initState.Position = transform.position;
     }
 
     private void Process()
