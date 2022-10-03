@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public struct InputState
 {
@@ -36,6 +37,8 @@ public class GameManager : MonoBehaviour
     public InputState[] InputRecording;
 
     public TMP_Text Timer;
+    public Slider Slider;
+    public TrackManager Track;
 
     public static GameManager Instance { get; private set; }
 
@@ -54,12 +57,15 @@ public class GameManager : MonoBehaviour
     private static readonly int AnimAwaitingToRecording = Animator.StringToHash("Await-Record");
     private static readonly int AnimRecordingToReplaying = Animator.StringToHash("Record-Replay");
     private static readonly int AnimReplayingToInactive = Animator.StringToHash("Replay-Inactive");
+    private static readonly int AnimReplayingToAwaiting = Animator.StringToHash("Replay-Await");
+    private static readonly int AnimRecordingToAwaiting = Animator.StringToHash("Record-Await");
+    private static readonly int AnimReplayingToReplaying = Animator.StringToHash("Replay-Replay");
 
     public Action OnFixedUpdateWorld;
     public bool Died = false;
     private static readonly int ShaderStartColor = Shader.PropertyToID("_");
-    public async void Awake()
 
+    protected async void Awake()
     {
         if (Instance != null)
         {
@@ -80,6 +86,12 @@ public class GameManager : MonoBehaviour
     protected void Update()
     {
         Timer.text = $"{Frame * Time.fixedDeltaTime:0.00}";
+        Slider.value = Frame / ((float)InputRecording.Length - 1);
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            ResetGame();
+        }
     }
 
     public void StartGame()
@@ -90,8 +102,20 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        ResetWorld();
         State = GameState.Awaiting;
         StateAnimator.Play(AnimInactiveToAwaiting);
+    }
+
+    public void ResetGame()
+    {
+        Track.SpawnDropTrack(InputRecording, 0);
+        for (var i = 0; i < InputRecording.Length; i++) InputRecording[i] = default;
+        ResetWorld();
+        if (State == GameState.Inactive) StateAnimator.Play(AnimInactiveToAwaiting);
+        if (State == GameState.Recording) StateAnimator.Play(AnimRecordingToAwaiting);
+        if (State == GameState.Replaying) StateAnimator.Play(AnimReplayingToAwaiting);
+        State = GameState.Awaiting;
     }
 
     public void FixedUpdate()
@@ -113,6 +137,8 @@ public class GameManager : MonoBehaviour
         if (State == GameState.Replaying && CurrentInput.Active)
         {
             State = GameState.Recording;
+            Track.SpawnDropTrack(InputRecording, Frame);
+            for (var i = Frame; i < InputRecording.Length; i++) InputRecording[i] = default;
             StateAnimator.Play(AnimReplayingToRecording);
         }
 
@@ -129,8 +155,19 @@ public class GameManager : MonoBehaviour
                 ResetWorld();
                 if (State == GameState.Recording)
                     StateAnimator.Play(AnimRecordingToReplaying);
+                else
+                    StateAnimator.Play(AnimReplayingToReplaying);
                 State = GameState.Replaying;
             }
+        }
+
+        if (State == GameState.Awaiting)
+        {
+            Track.UpdateTrack(InputRecording, 0);
+        }
+        else
+        {
+            Track.UpdateTrack(InputRecording, (State == GameState.Recording) ? Frame : -1);
         }
     }
 

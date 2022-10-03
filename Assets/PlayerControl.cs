@@ -23,6 +23,7 @@ public class PlayerControl : MonoBehaviour
         public Vector2 Position;
         public bool Jumping;
         public bool Landing;
+        public bool FaceRight;
         public int LastJumpFrame;
         public int LastGroundFrame;
         public bool Grounded;
@@ -49,7 +50,7 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private int _collisionIteration = 10;
     [SerializeField] private float _rayBuffer = 0.1f;
-    
+
     private PlayerState _state;
     private PlayerState _initState;
 
@@ -80,7 +81,7 @@ public class PlayerControl : MonoBehaviour
         var raysUp = new RayRange(b.min.x + _rayBuffer, b.max.y, b.max.x - _rayBuffer, b.max.y, Vector2.up);
         var raysLeft = new RayRange(b.min.x, b.min.y + _rayBuffer, b.min.x, b.max.y - _rayBuffer, Vector2.left);
         var raysRight = new RayRange(b.max.x, b.min.y + _rayBuffer, b.max.x, b.max.y - _rayBuffer, Vector2.right);
-        
+
         // Bounds
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireCube(b.center, b.size);
@@ -100,11 +101,15 @@ public class PlayerControl : MonoBehaviour
     {
         _state = _initState;
         transform.position = _state.Position;
+        if (_state.FaceRight) Sprite.flipX = false;
+        else Sprite.flipX = true;
+        Animator.Play("Idle");
     }
-    
+
     private void Process()
     {
         var t = transform;
+        var lastPos = t.position;
 
         var game = GameManager.Instance;
         var input = game.FetchInput();
@@ -114,12 +119,9 @@ public class PlayerControl : MonoBehaviour
             _state.LastJumpFrame = game.Frame;
         }
 
-        if (input.Move > 0) Sprite.flipX = true;
-        else if (input.Move < 0) Sprite.flipX = false;
-        
-        if (input.Move != 0) Animator.Play("Running");
-        else Animator.Play("Idle");
-        
+        if (input.Move > 0) _state.FaceRight = Sprite.flipX = true;
+        else if (input.Move < 0) _state.FaceRight = Sprite.flipX = false;
+
         // Collision detection
         bool RunDetection(RayRange range)
         {
@@ -205,16 +207,14 @@ public class PlayerControl : MonoBehaviour
         var delta = _state.Velocity * Time.fixedDeltaTime;
         var furthestPoint = pos + delta;
         var distance = delta.magnitude;
-        
+
         // check furthest movement. If nothing hit, move and don't do extra checks
         var hit = Physics2D.OverlapBox(furthestPoint, b.size, 0, _groundLayer);
         if (!hit)
         {
-            t.position = (Vector2)t.position + delta;
-            return;
+            pos = furthestPoint;
         }
-
-        if (distance > 0.00001f)
+        else if (distance > 0.00001f)
         {
             for (int i = 1; i < _collisionIteration; i++)
             {
@@ -264,5 +264,17 @@ public class PlayerControl : MonoBehaviour
         }
 
         t.position = pos - Collider.offset;
+
+        // Animation
+        if (_state.Landing)
+        {
+            Animator.Play("Landing");
+        }
+        else if (_state.Jumping)
+        {
+            Animator.Play("Prejump");
+        }
+
+        Animator.SetBool("Running", ((Vector2)(lastPos - t.position)).magnitude > 0.0001f);
     }
 }
