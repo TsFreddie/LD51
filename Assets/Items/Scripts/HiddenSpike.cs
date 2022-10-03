@@ -10,6 +10,7 @@ public class HiddenSpike : MonoBehaviour
     private float _leftTime = float.MinValue;
 
     private Vector3 _visualInitPosition;
+    
     public GameObject Visual;
 
     protected void Awake()

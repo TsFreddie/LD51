@@ -1911,7 +1911,6 @@ MonoBehaviour:
   Player: {fileID: 0}
   PlayerSnapshot: {fileID: 325046839}
   State: 3
-  Died: 0
 --- !u!4 &1108962439
 Transform:
   m_ObjectHideFlags: 0
