@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -63,7 +64,10 @@ public class GameManager : MonoBehaviour
 
     public Action OnFixedUpdateWorld;
     public bool Died = false;
-    private static readonly int ShaderStartColor = Shader.PropertyToID("_");
+
+    private static readonly int ShaderEffectFactor = Shader.PropertyToID("_EffectFactor");
+    private static readonly int ShaderVanishFactor = Shader.PropertyToID("_Vanish");
+
 
     protected async void Awake()
     {
@@ -105,6 +109,8 @@ public class GameManager : MonoBehaviour
         ResetWorld();
         State = GameState.Awaiting;
         StateAnimator.Play(AnimInactiveToAwaiting);
+        SetVoidMode();
+        CancelVanish();
     }
 
     public void ResetGame()
@@ -113,13 +119,11 @@ public class GameManager : MonoBehaviour
         for (var i = 0; i < InputRecording.Length; i++) InputRecording[i] = default;
         ResetWorld();
         if (State == GameState.Inactive) StateAnimator.Play(AnimInactiveToAwaiting);
-        if (State == GameState.Recording)
-        {
-            StateAnimator.Play(AnimRecordingToAwaiting);
-            CameraController.Instance.SetNormalMode();
-        }
+        if (State == GameState.Recording) StateAnimator.Play(AnimRecordingToAwaiting);
         if (State == GameState.Replaying) StateAnimator.Play(AnimReplayingToAwaiting);
         State = GameState.Awaiting;
+        SetVoidMode();
+        CancelVanish();
     }
 
     public void FixedUpdate()
@@ -135,14 +139,15 @@ public class GameManager : MonoBehaviour
         {
             ResetWorld();
             State = GameState.Recording;
-            CameraController.Instance.SetRecordingMode();
+            StartVanish();
             StateAnimator.Play(AnimAwaitingToRecording);
         }
 
         if (State == GameState.Replaying && CurrentInput.Active)
         {
             State = GameState.Recording;
-            CameraController.Instance.SetRecordingMode();
+            StartVanish();
+            SetVoidMode();
             Track.SpawnDropTrack(InputRecording, Frame);
             for (var i = Frame; i < InputRecording.Length; i++) InputRecording[i] = default;
             StateAnimator.Play(AnimReplayingToRecording);
@@ -161,7 +166,8 @@ public class GameManager : MonoBehaviour
                 ResetWorld();
                 if (State == GameState.Recording)
                 {
-                    CameraController.Instance.SetNormalMode();
+                    CancelVanish();
+                    SetNormalMode();
                     StateAnimator.Play(AnimRecordingToReplaying);
                 }
                 else
@@ -229,6 +235,54 @@ public class GameManager : MonoBehaviour
 
         if (destination == null) return;
         Debug.Log(destination.transform.position);
+    }
 
+    private bool _voidMode;
+    private float _voidFactor;
+    private bool _vanish;
+    private float _vanishFactor;
+
+    public async void SetVoidMode()
+    {
+        _voidMode = true;
+        while (_voidMode && _voidFactor < 1f)
+        {
+            _voidFactor += Time.deltaTime * 2.0f;
+            Shader.SetGlobalFloat(ShaderEffectFactor, Mathf.Clamp(_voidFactor, 0, 1));
+            await UniTask.Yield();
+        }
+    }
+
+    public async void SetNormalMode()
+    {
+        _voidMode = false;
+        while (!_voidMode && _voidFactor > 0f)
+        {
+            _voidFactor -= Time.deltaTime * 2.0f;
+            Shader.SetGlobalFloat(ShaderEffectFactor, Mathf.Clamp(_voidFactor, 0, 1));
+            await UniTask.Yield();
+        }
+    }
+
+    public async void StartVanish()
+    {
+        _vanish = true;
+        while (_vanish && _vanishFactor < 1f)
+        {
+            _vanishFactor += Time.deltaTime * 2.0f;
+            Shader.SetGlobalFloat(ShaderVanishFactor, Mathf.Clamp(_vanishFactor, 0, 1));
+            await UniTask.Yield();
+        }
+    }
+
+    public async void CancelVanish()
+    {
+        _vanish = false;
+        while (!_vanish && _vanishFactor > 0f)
+        {
+            _vanishFactor -= Time.deltaTime * 10.0f;
+            Shader.SetGlobalFloat(ShaderVanishFactor, Mathf.Clamp(_vanishFactor, 0, 1));
+            await UniTask.Yield();
+        }
     }
 }
