@@ -50,6 +50,8 @@ public class GameManager : MonoBehaviour
 
     public int Frame { get; private set; }
 
+    public bool IsReplaying => State == GameState.Replaying;
+
     public Action OnReset;
     public Action OnFixedUpdate;
 
