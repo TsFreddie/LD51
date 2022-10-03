@@ -72,6 +72,7 @@ public class ActionBar : MonoBehaviour
         while (t < 2.5f)
         {
             t += Time.deltaTime;
+            if (this == null) return;
             Bg.anchoredPosition += velocity * Time.deltaTime;
             Bg.rotation = Quaternion.Euler(0, 0, angularVelocity * t);
             angularVelocity -= 10.0f * Time.deltaTime;
@@ -79,6 +80,7 @@ public class ActionBar : MonoBehaviour
             await UniTask.Yield();
         }
 
+        if (this == null) return;
         callback?.Invoke();
     }
 }

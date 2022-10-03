@@ -34,6 +34,8 @@ public class PlayerControl : MonoBehaviour
     public SpriteRenderer Sprite;
     public Animator Animator;
 
+    public bool FacingRightWhenStart = true;
+
     [Header("Movement")]
     [SerializeField] private float _acceleration = 90.0f;
     [SerializeField] private float _moveSpeed = 13.0f;
@@ -58,7 +60,12 @@ public class PlayerControl : MonoBehaviour
     {
         GameManager.Instance.OnFixedUpdate += Process;
         GameManager.Instance.OnReset += ResetInit;
+        _state.LastJumpFrame = int.MinValue;
+        _state.LastGroundFrame = int.MinValue;
         _state.Position = transform.position;
+        _state.FaceRight = FacingRightWhenStart;
+        if (Sprite.flipX != _state.FaceRight)
+            Sprite.flipX = _state.FaceRight;
         _initState = _state;
     }
 
