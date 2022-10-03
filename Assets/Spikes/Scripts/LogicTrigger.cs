@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class Switch : MonoBehaviour
 {
-    [Header("要触发的陷阱")]
+    // TODO!C: CHINESE
+    [Header("要触发的机关")]
     public Switchable Target;
+
+    public Sprite OffSprite;
+    public Sprite OnSprite;
+
+    [Header("可重复触发")]
+    public bool Repeatable;
 
     private Collider2D switchColl;
     private List<Collider2D> _colliders;
@@ -13,6 +20,11 @@ public class Switch : MonoBehaviour
     protected void Awake()
     {
         GameManager.Instance.OnFixedUpdateWorld += SwitchUpdate;
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.Instance.OnFixedUpdateWorld -= SwitchUpdate;
     }
 
     // Start is called before the first frame update
@@ -25,9 +37,9 @@ public class Switch : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-    
+
     private void SwitchUpdate()
     {
         switchColl.OverlapCollider(new ContactFilter2D()
@@ -35,16 +47,10 @@ public class Switch : MonoBehaviour
             useLayerMask = true,
             layerMask = LayerMask.GetMask("Player")
         }, _colliders);
-        
+
         if (_colliders.Count > 0)
         {
             Target.Trigger();
         }
-    }
-
-
-    private void OnDestroy()
-    {
-        GameManager.Instance.OnFixedUpdateWorld -= SwitchUpdate;
     }
 }
