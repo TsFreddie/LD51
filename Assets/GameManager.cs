@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour
         State = GameState.Awaiting;
         StateAnimator.Play(AnimInactiveToAwaiting);
         SetVoidMode();
-        if (Player != null) Player.CancelVanish();
+        // if (Player != null) Player.CancelVanish();
         HideSnapshot();
     }
 
@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
         if (State == GameState.Replaying) StateAnimator.Play(AnimReplayingToAwaiting);
         State = GameState.Awaiting;
         SetVoidMode();
-        if (Player != null) Player.CancelVanish();
+        // if (Player != null) Player.CancelVanish();
         HideSnapshot();
     }
 
@@ -192,7 +192,6 @@ public class GameManager : MonoBehaviour
                 ResetWorld();
                 if (State == GameState.Recording)
                 {
-                    if (Player != null) Player.CancelVanish();
                     HideSnapshot();
                     SetNormalMode();
                     StateAnimator.Play(AnimRecordingToReplaying);
@@ -222,6 +221,7 @@ public class GameManager : MonoBehaviour
     {
         Frame = 0;
         _died = false;
+        if (Player != null) Player.CancelVanish();
         OnReset?.Invoke();
         SkipInput = false;
     }
@@ -338,7 +338,7 @@ public class GameManager : MonoBehaviour
             LockWorld();
 
             SetNormalMode();
-            if (Player != null) Player.CancelVanish();
+            // if (Player != null) Player.CancelVanish();
 
             await UniTask.Delay(1500);
 
