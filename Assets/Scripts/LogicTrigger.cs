@@ -36,6 +36,7 @@ public class LogicTrigger : MonoBehaviour
     private void ResetSwitch()
     {
         _collider.enabled = true;
+        _triggered = false;
         if (SpriteRenderer != null)
         {
             SpriteRenderer.sprite = _offSprite;
@@ -74,9 +75,9 @@ public class LogicTrigger : MonoBehaviour
         }
         else
         {
-            if (_triggered) _triggered = false;
             if (Repeatable)
             {
+                if (_triggered) _triggered = false;
                 if (Target != null)
                     Target.Untrigger();
                 if (SpriteRenderer != null)

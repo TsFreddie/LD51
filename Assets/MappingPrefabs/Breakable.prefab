@@ -74,7 +74,7 @@ MonoBehaviour:
   OffSound: 
   OnSound: 
   SpriteRenderer: {fileID: 0}
-  Repeatable: 0
+  Repeatable: 1
 --- !u!114 &6220505625369127250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,7 +115,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.29166666, y: 0.5833333}
+  m_Size: {x: 0.41666666, y: 0.5833333}
   m_EdgeRadius: 0
 --- !u!1 &6220505625765003017
 GameObject:

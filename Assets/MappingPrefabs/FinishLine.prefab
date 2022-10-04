@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: f1f20ba886842ab46acf6d63b487d1b9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -97,6 +97,8 @@ GameObject:
   - component: {fileID: 4372123277884172377}
   - component: {fileID: 4372123277884172382}
   - component: {fileID: 4372123277884172378}
+  - component: {fileID: -9003225403809499628}
+  - component: {fileID: 8030409171726682166}
   m_Layer: 0
   m_Name: FinishLine
   m_TagString: Untagged
@@ -160,7 +162,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -2
   m_Sprite: {fileID: 15692455, guid: 273efb1965b803840a9210b3393627be, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -228,4 +230,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 702a42e5fe889524fab624bee37e21f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NextLevel: SampleScene
+  NextLevel: 2-2
+--- !u!114 &-9003225403809499628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372123277884172383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9383e27bd11f4144b3b55c94ad46ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SpriteRenderer: {fileID: 4372123277884172376}
+  Animator: {fileID: 8030409171726682166}
+--- !u!95 &8030409171726682166
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372123277884172383}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 24c7370f5d8eafb4cb3afb4ff3fa0d2c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

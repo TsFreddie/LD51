@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -100,7 +99,7 @@ public class GameManager : MonoBehaviour
         if (SceneManager.sceneCount == 2)
         {
             _loadedLevel = SceneManager.GetSceneAt(1);
-            await Task.Delay(1000);
+            await UniTask.Delay(1000);
             StartGame();
             return;
         }
@@ -110,25 +109,50 @@ public class GameManager : MonoBehaviour
         Intro.gameObject.SetActive(true);
         Intro.alpha = 0.0f;
 
-        await Task.Delay(1000);
+        await UniTask.Delay(1000);
 
         while (Intro.alpha < 1.0f)
         {
             Intro.alpha += Time.deltaTime * 2.0f;
-            await Task.Yield();
+            await UniTask.Yield();
         }
         Intro.alpha = 1.0f;
 
-        await Task.Delay(2500);
+        await UniTask.Delay(2500);
 
         while (Intro.alpha > 0.0f)
         {
             Intro.alpha -= Time.deltaTime * 2.0f;
-            await Task.Yield();
+            await UniTask.Yield();
         }
         Intro.gameObject.SetActive(false);
         Intro.alpha = 0.0f;
         LoadLevel(FirstLevel);
+    }
+
+    private bool CheckLevelSelect()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            FirstLevel = "1-1";
+            return true;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            FirstLevel = "2-1";
+            return true;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            FirstLevel = "3-1";
+            return true;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            FirstLevel = "4-1";
+            return true;
+        }
+        return false;
     }
 
     private float _transition = 0.0f;
@@ -136,21 +160,22 @@ public class GameManager : MonoBehaviour
 
     private async void LoadLevel(string level)
     {
+        CheckpointProgress = 0;
         LockWorld();
 
         if (Player != null) Player.StartVanish();
 
-        await Task.Delay(1000);
+        await UniTask.Delay(1000);
 
         while (_transition < 1.0f)
         {
             _transition += Time.deltaTime;
             RenderArea.material.SetFloat(ShaderTransition, _transition);
-            await Task.Yield();
+            await UniTask.Yield();
         }
 
         RenderArea.material.SetFloat(ShaderTransition, 1.0f);
-        await Task.Yield();
+        await UniTask.Yield();
         if (_loadedLevel.IsValid())
             await SceneManager.UnloadSceneAsync(_loadedLevel);
         await SceneManager.LoadSceneAsync(level, LoadSceneMode.Additive);
@@ -160,18 +185,19 @@ public class GameManager : MonoBehaviour
         {
             _transition += Time.deltaTime;
             RenderArea.material.SetFloat(ShaderTransition, _transition);
-            await Task.Yield();
+            await UniTask.Yield();
         }
 
         _transition = 0.0f;
         RenderArea.material.SetFloat(ShaderTransition, 0.0f);
 
-        await Task.Delay(1000);
+        await UniTask.Delay(1000);
         StartGame();
     }
 
     protected void Update()
     {
+        CheckLevelSelect();
         Timer.text = $"{Frame * Time.fixedDeltaTime:0.00}";
         Slider.value = Frame / ((float)InputRecording.Length - 1);
 
@@ -180,8 +206,8 @@ public class GameManager : MonoBehaviour
             ResetGame();
         }
 
-        _enterDown = Input.GetKeyDown(KeyCode.Return);
-        _actionDown = Input.GetKeyDown(KeyCode.Space) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A);
+        _enterDown |= Input.GetKeyDown(KeyCode.Return);
+        _actionDown |= Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A);
     }
 
     public void StartGame()
@@ -241,9 +267,29 @@ public class GameManager : MonoBehaviour
     public void FixedUpdate()
     {
         DoFixedUpdate();
-        if (State == GameState.Replaying && Input.GetKey(KeyCode.F))
+
+        _enterDown = false;
+        _actionDown = false;
+    }
+
+    public void DoReplayLogic()
+    {
+        if (!_enterDown)
+            StepFrame();
+        if (Frame == InputRecording.Length || _enterDown)
         {
-            DoFixedUpdate();
+            ResetWorld();
+            if (State == GameState.Recording)
+            {
+                HideSnapshot();
+                SetNormalMode();
+                StateAnimator.Play(AnimRecordingToReplaying);
+            }
+            else
+                StateAnimator.Play(AnimReplayingToReplaying);
+            AudioManager.Instance.Play("replaying");
+            OnWorldStart?.Invoke();
+            State = GameState.Replaying;
         }
     }
 
@@ -266,7 +312,7 @@ public class GameManager : MonoBehaviour
             AudioManager.Instance.Play("recording");
         }
 
-        if (!_died && State == GameState.Replaying && _actionDown)
+        if (!_died && State == GameState.Replaying && _actionDown && Frame > 30)
         {
             State = GameState.Recording;
             if (Player != null) Player.StartVanish();
@@ -276,6 +322,8 @@ public class GameManager : MonoBehaviour
             for (var i = Frame; i < InputRecording.Length; i++) InputRecording[i] = default;
             StateAnimator.Play(AnimReplayingToRecording);
             AudioManager.Instance.Play("recording");
+            _resetCount++;
+            ResetCounter.text = _resetCount.ToString();
         }
 
         if (State == GameState.Recording)
@@ -285,22 +333,10 @@ public class GameManager : MonoBehaviour
 
         if (State == GameState.Replaying || State == GameState.Recording)
         {
-            if (!_enterDown)
-                StepFrame();
-            if (Frame == InputRecording.Length || _enterDown)
+            DoReplayLogic();
+            if (State == GameState.Replaying && Input.GetKey(KeyCode.F))
             {
-                ResetWorld();
-                if (State == GameState.Recording)
-                {
-                    HideSnapshot();
-                    SetNormalMode();
-                    StateAnimator.Play(AnimRecordingToReplaying);
-                }
-                else
-                    StateAnimator.Play(AnimReplayingToReplaying);
-                AudioManager.Instance.Play("replaying");
-                OnWorldStart?.Invoke();
-                State = GameState.Replaying;
+                DoReplayLogic();
             }
         }
 
@@ -312,9 +348,6 @@ public class GameManager : MonoBehaviour
         {
             Track.UpdateTrack(InputRecording, (State == GameState.Recording) ? Frame : -1);
         }
-
-        _enterDown = false;
-        _actionDown = false;
     }
 
     private void ResetWorld()

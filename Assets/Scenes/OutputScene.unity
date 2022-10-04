@@ -492,7 +492,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 196.5, y: 40.8}
+  m_AnchoredPosition: {x: 196.5, y: 40.800003}
   m_SizeDelta: {x: 9, y: 6}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &169017771
@@ -2420,7 +2420,7 @@ MonoBehaviour:
   RenderArea: {fileID: 1055582557}
   FirstLevel: 1-1
   EndingUI: {fileID: 1121009890}
-  ResetCounter: {fileID: 0}
+  ResetCounter: {fileID: 508365284}
   Player: {fileID: 0}
   PlayerSnapshot: {fileID: 325046839}
   State: 3

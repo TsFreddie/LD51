@@ -9,6 +9,7 @@ public class Breakable : Switchable
     public Collider2D CollisionCollider;
 
     private int _breaks;
+    private bool _broken;
 
     public void Awake()
     {
@@ -23,6 +24,7 @@ public class Breakable : Switchable
     private void WorldReset()
     {
         _breaks = 0;
+        _broken = false;
         CollisionCollider.enabled = true;
         Animator.SetBool("Break", false);
         UpdateText();
@@ -42,12 +44,14 @@ public class Breakable : Switchable
 
     public override void Trigger()
     {
+        if (_broken) return;
         _breaks += 1;
         if (_breaks >= BreakCount)
         {
             Animator.SetBool("Break", true);
             CollisionCollider.enabled = false;
             AudioManager.Instance.Play("breakable_break");
+            _broken = true;
         }
         else
         {

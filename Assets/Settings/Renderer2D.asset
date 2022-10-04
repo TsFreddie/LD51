@@ -18,7 +18,7 @@ MonoBehaviour:
     integerScaleMaterial: {fileID: 2100000, guid: a6f5a3dfe02e0b342b27745c758c298d, type: 2}
     sharpBilinearMaterial: {fileID: 2100000, guid: 50744715ee95a8d468e25953d6b92c8f, type: 2}
     targetTexture: {fileID: 8400000, guid: 1b322c7d932c3264fbef9040b72ab67d, type: 2}
-    scaleMode: 1
+    scaleMode: 2
     trimPaddingPixels: 0
 --- !u!114 &11400000
 MonoBehaviour:
