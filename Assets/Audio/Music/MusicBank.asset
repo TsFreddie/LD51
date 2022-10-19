@@ -23,6 +23,7 @@ MonoBehaviour:
     StopWhenSourceDies: 0
     KeepLoopingWhenSourceDies: 0
     DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
     BypassEffects: 0
     BypassListenerEffects: 0
     BypassReverbZones: 0
@@ -30,7 +31,7 @@ MonoBehaviour:
     MaxDistance: 500
     MinDistance: 1
     Mute: 0
-    OutputAudioMixerGroup: {fileID: 0}
+    OutputAudioMixerGroup: {fileID: -4935748257193303068, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
     PanStereo: 0
     Spatialize: 0
     RolloffMode: 0
@@ -54,6 +55,7 @@ MonoBehaviour:
     StopWhenSourceDies: 0
     KeepLoopingWhenSourceDies: 0
     DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
     BypassEffects: 0
     BypassListenerEffects: 0
     BypassReverbZones: 0
@@ -61,7 +63,7 @@ MonoBehaviour:
     MaxDistance: 500
     MinDistance: 1
     Mute: 0
-    OutputAudioMixerGroup: {fileID: 0}
+    OutputAudioMixerGroup: {fileID: -4935748257193303068, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
     PanStereo: 0
     Spatialize: 0
     RolloffMode: 0
@@ -85,6 +87,7 @@ MonoBehaviour:
     StopWhenSourceDies: 0
     KeepLoopingWhenSourceDies: 0
     DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
     BypassEffects: 0
     BypassListenerEffects: 0
     BypassReverbZones: 0
@@ -92,7 +95,7 @@ MonoBehaviour:
     MaxDistance: 500
     MinDistance: 1
     Mute: 0
-    OutputAudioMixerGroup: {fileID: 0}
+    OutputAudioMixerGroup: {fileID: -4935748257193303068, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
     PanStereo: 0
     Spatialize: 0
     RolloffMode: 0
@@ -116,6 +119,7 @@ MonoBehaviour:
     StopWhenSourceDies: 0
     KeepLoopingWhenSourceDies: 0
     DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
     BypassEffects: 0
     BypassListenerEffects: 0
     BypassReverbZones: 0
@@ -123,7 +127,7 @@ MonoBehaviour:
     MaxDistance: 500
     MinDistance: 1
     Mute: 0
-    OutputAudioMixerGroup: {fileID: 0}
+    OutputAudioMixerGroup: {fileID: -4935748257193303068, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
     PanStereo: 0
     Spatialize: 0
     RolloffMode: 0

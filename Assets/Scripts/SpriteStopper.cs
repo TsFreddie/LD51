@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class SpriteStopper : MonoBehaviour
 {
-    public SpriteRenderer SpriteRenderer;
-    public Animator Animator;
+    private SpriteRenderer _spriteRenderer;
+    private Animator _animator;
     private Sprite _initSprite;
 
     public void Awake()
     {
-        SpriteRenderer = GetComponent<SpriteRenderer>();
-        Animator = GetComponent<Animator>();
-        _initSprite = SpriteRenderer.sprite;
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _animator = GetComponent<Animator>();
+        _initSprite = _spriteRenderer.sprite;
         GameManager.Instance.OnReset += WorldReset;
         GameManager.Instance.OnWorldStart += WorldStart;
     }
@@ -25,15 +25,15 @@ public class SpriteStopper : MonoBehaviour
 
     private void WorldReset()
     {
-        if (Animator != null)
-            Animator.enabled = false;
-        if (SpriteRenderer != null)
-            SpriteRenderer.sprite = _initSprite;
+        if (_animator != null)
+            _animator.enabled = false;
+        if (_spriteRenderer != null)
+            _spriteRenderer.sprite = _initSprite;
     }
 
     private void WorldStart()
     {
-        if (Animator != null)
-            Animator.enabled = true;
+        if (_animator != null)
+            _animator.enabled = true;
     }
 }

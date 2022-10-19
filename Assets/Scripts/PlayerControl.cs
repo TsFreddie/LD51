@@ -112,6 +112,9 @@ public class PlayerControl : MonoBehaviour
         _state.LastGroundFrame = int.MinValue;
         _state.Position = transform.position;
         _state.FaceRight = FacingRightWhenStart;
+        
+        _state.Grounded = true;
+        
         if (Sprite.flipX != _state.FaceRight)
             Sprite.flipX = _state.FaceRight;
         _initState = _state;
@@ -272,12 +275,13 @@ public class PlayerControl : MonoBehaviour
         // Jump
         var canUseCoyote = _state.CoyoteUsable && !colDown && _state.LastGroundFrame + Mathf.RoundToInt(_coyoteTimeThreshold / Time.fixedDeltaTime) > game.Frame;
         var hasBufferedJump = colDown && _state.LastJumpFrame + Mathf.RoundToInt(_jumpBuffer / Time.fixedDeltaTime) > game.Frame;
-        if (input.JumpDown && canUseCoyote || hasBufferedJump)
+        if ((input.JumpDown && canUseCoyote) || hasBufferedJump)
         {
             _state.Velocity.y = _jumpVelocity;
             _state.CoyoteUsable = false;
             _state.LastGroundFrame = int.MinValue;
             _state.Jumping = true;
+            _state.LastJumpFrame = int.MinValue;
         }
         else
         {
@@ -347,16 +351,19 @@ public class PlayerControl : MonoBehaviour
 
         t.position = pos - Collider.offset;
 
-        // Animation
+        // Animation and sound
+        if (_state.Jumping)
+        {
+            AudioManager.Instance.Play("jump");
+            CaptionManager.Instance.ShowCaption("jump", 1.0f, CaptionType.Info);
+            Animator.Play("Prejump");
+        }
+        
         if (_state.Landing)
         {
             AudioManager.Instance.Play("landing");
+            CaptionManager.Instance.ShowCaption("landing", 1.0f, CaptionType.Info);
             Animator.Play("Landing");
-        }
-        else if (_state.Jumping)
-        {
-            AudioManager.Instance.Play("jump");
-            Animator.Play("Prejump");
         }
 
         Animator.SetBool("Running", ((Vector2)(lastPos - t.position)).magnitude > 0.0001f);

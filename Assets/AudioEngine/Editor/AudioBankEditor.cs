@@ -121,7 +121,8 @@ public class AudioBankEditor : UnityEditor.Editor
             "Loop",
             "Stop when destroyed",
             "Keep looping when destroyed",
-            "Don't follow transform"
+            "Don't follow transform",
+            "Allow multiple in same frame"
         };
 
         var mask = 0;
@@ -129,6 +130,7 @@ public class AudioBankEditor : UnityEditor.Editor
         if (audioEvent.StopWhenSourceDies) mask |= 1 << 1;
         if (audioEvent.KeepLoopingWhenSourceDies) mask |= 1 << 2;
         if (audioEvent.DoNotTrackSourceMovement) mask |= 1 << 3;
+        if (audioEvent.AllowMultipleInSingleFrame) mask |= 1 << 4;
         if ((mask & 0xF) == 0xF) mask = ~0;
 
         mask = EditorGUI.MaskField(rect, mask, names);
@@ -137,5 +139,6 @@ public class AudioBankEditor : UnityEditor.Editor
         audioEvent.StopWhenSourceDies = (mask & 1 << 1) > 0;
         audioEvent.KeepLoopingWhenSourceDies = (mask & 1 << 2) > 0;
         audioEvent.DoNotTrackSourceMovement = (mask & 1 << 3) > 0;
+        audioEvent.AllowMultipleInSingleFrame = (mask & 1 << 4) > 0;
     }
 }

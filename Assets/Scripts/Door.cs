@@ -21,7 +21,7 @@ public class Door : Switchable
     {
         if (_open)
         {
-            var target = new Vector3(0, RendererForSize.size.y, 0);
+            var target = DoorTransform.up * RendererForSize.size.y;
             DoorTransform.localPosition = Vector3.Lerp(DoorTransform.localPosition, target, 10.0f * Time.deltaTime);   
         }
     }
@@ -40,6 +40,7 @@ public class Door : Switchable
             _open = true;
             Collider.enabled = false;
             AudioManager.Instance.Play("door_open");
+            CaptionManager.Instance.ShowCaption("door open", 2.0f, CaptionType.Item);
         }
     }
 }

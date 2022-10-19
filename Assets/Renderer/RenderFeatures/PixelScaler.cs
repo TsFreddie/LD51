@@ -44,18 +44,13 @@ public class PixelScaler : ScriptableRendererFeature
                 preScaleTextureDesc.width = _settings.TargetWidth * IntegerScale;
                 preScaleTextureDesc.height = _settings.TargetHeight * IntegerScale;
                 cmd.GetTemporaryRT(_preScaleTexture.id, preScaleTextureDesc, FilterMode.Bilinear);
-                Blit(cmd, new RenderTargetIdentifier(_settings.targetTexture), _preScaleTexture.Identifier(), _settings.integerScaleMaterial);
+                Blit(cmd, new RenderTargetIdentifier(_settings.targetTexture), _preScaleTexture.Identifier());
                 Blit(cmd, _preScaleTexture.Identifier(), renderer.cameraColorTarget, _settings.sharpBilinearMaterial);
                 break;
             }
             case ScaleMode.SimpleStretch:
             {
-                var preScaleTextureDesc = renderingData.cameraData.cameraTargetDescriptor;
-                preScaleTextureDesc.width = _settings.TargetWidth * IntegerScale;
-                preScaleTextureDesc.height = _settings.TargetHeight * IntegerScale;
-                cmd.GetTemporaryRT(_preScaleTexture.id, preScaleTextureDesc, FilterMode.Point);
-                Blit(cmd, new RenderTargetIdentifier(_settings.targetTexture), _preScaleTexture.Identifier(), _settings.integerScaleMaterial);
-                Blit(cmd, _preScaleTexture.Identifier(), renderer.cameraColorTarget, _settings.sharpBilinearMaterial);
+                Blit(cmd, new RenderTargetIdentifier(_settings.targetTexture), renderer.cameraColorTarget, _settings.sharpBilinearMaterial);
                 break;
             }
             case ScaleMode.Integer:
@@ -98,6 +93,9 @@ public class PixelScaler : ScriptableRendererFeature
     private static int s_scale = Shader.PropertyToID("_PixelScale");
     private PixelScalerPass _pass;
 
+    private int _integerScale;
+    private Vector2 _fillScale = Vector2.one;
+
     public enum ScaleMode
     {
         Integer,
@@ -126,13 +124,47 @@ public class PixelScaler : ScriptableRendererFeature
         var screenAspect = Screen.width / (float)Screen.height;
 
         var integerScale = Mathf.Max(Mathf.Min(Screen.width / width, Screen.height / height), 1);
+
         var fillScale = (width / (float)height < Screen.width / (float)Screen.height) ?
             new Vector2(screenAspect / width * height, 1) :
             new Vector2(1, width / (float)height / screenAspect);
-        _pass.IntegerScale = integerScale;
+
+        _integerScale = _pass.IntegerScale = settings.scaleMode == ScaleMode.SharpBilinear ? integerScale + 1 : integerScale;
+        _fillScale = fillScale;
 
         Shader.SetGlobalVector(s_renderSize, new Vector4(width, height, rawWidth, rawHeight));
         Shader.SetGlobalVector(s_scale, new Vector4(fillScale.x, fillScale.y, integerScale, settings.scaleMode == ScaleMode.Integer ? 0 : 1));
         renderer.EnqueuePass(_pass);
+    }
+
+    public Vector2 ScreenToRenderTexture(Vector2 screenPos)
+    {
+        var renderSize = new Vector2(settings.TargetWidth, settings.TargetHeight);
+
+        var screenSize = new Vector2(Screen.width, Screen.height);
+        var scaledScreenSize = screenSize / _fillScale;
+        var integerScaled = settings.scaleMode == ScaleMode.Integer;
+
+        Vector2 margin;
+        Vector2 scaleFactor;
+
+        if (integerScaled)
+        {
+            var integerScaledRenderSize = renderSize * _integerScale;
+            var integerMargin = (screenSize - integerScaledRenderSize) / 2.0f;
+            margin = new Vector2(Mathf.Floor(integerMargin.x), Mathf.Floor(integerMargin.y));
+            scaleFactor = renderSize / integerScaledRenderSize;
+        }
+        else
+        {
+            margin = (screenSize - scaledScreenSize) / 2.0f;
+            scaleFactor = renderSize / scaledScreenSize;
+        }
+
+        // adjust screen position
+        screenPos -= margin;
+        // scaled to render size
+        screenPos *= scaleFactor;
+        return screenPos;
     }
 }

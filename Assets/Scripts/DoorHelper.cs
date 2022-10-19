@@ -13,7 +13,7 @@ public class DoorHelper : MonoBehaviour
         var thisBoxCollider = GetComponent<BoxCollider2D>();
         var mask = GetComponentInChildren<SpriteMask>();
         thisBoxCollider.size = thisRenderer.size;
-        mask.transform.localScale = new Vector3(1, thisRenderer.size.y, 1);
+        mask.transform.localScale = new Vector3(1, thisRenderer.size.y / 2.0f, 1);
         foreach (var renderer in renderers)
         {
             renderer.size = thisRenderer.size;

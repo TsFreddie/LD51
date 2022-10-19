@@ -14,6 +14,7 @@ public class Breakable : Switchable
     public void Awake()
     {
         GameManager.Instance.OnReset += WorldReset;
+        UpdateText();
     }
 
     public void OnDestroy()
@@ -51,12 +52,14 @@ public class Breakable : Switchable
             Animator.SetBool("Break", true);
             CollisionCollider.enabled = false;
             AudioManager.Instance.Play("breakable_break");
+            CaptionManager.Instance.ShowCaption("block break", 2.0f, CaptionType.Item);
             _broken = true;
         }
         else
         {
             Animator.SetTrigger("JumpInto");
             AudioManager.Instance.Play("breakable_jumpInto");
+            CaptionManager.Instance.ShowCaption("bonk", 1.0f, CaptionType.Item);
         }
         UpdateText();
     }

@@ -47,7 +47,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.083333336}
+  m_Offset: {x: 0, y: -0.071428575}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -74,8 +74,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Target: {fileID: 0}
   OnSprite: {fileID: -1853491024, guid: 83640862f10f9284e9ed265b29c4f5c2, type: 3}
-  OffSound: button_down
-  OnSound: button_up
+  OffSound: button_up
+  OnSound: button_down
+  OffCaption: 
+  OnCaption: click
+  OffCaptionTime: 0
+  OnCaptionTime: 1
+  OffCaptionColor: {r: 1, g: 1, b: 1, a: 0}
+  OnCaptionColor: {r: 0.49019608, g: 0.92156863, b: 0.44705883, a: 0}
   SpriteRenderer: {fileID: 6338240081440084918}
   Repeatable: 0
 --- !u!1 &6338240081440084917
@@ -89,7 +95,7 @@ GameObject:
   - component: {fileID: 6338240081440084919}
   - component: {fileID: 6338240081440084918}
   m_Layer: 0
-  m_Name: CameraCheckpoint
+  m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

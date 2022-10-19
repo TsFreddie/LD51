@@ -16,6 +16,7 @@ public class AudioEvent
     public bool StopWhenSourceDies = false;
     public bool KeepLoopingWhenSourceDies = false;
     public bool DoNotTrackSourceMovement = false;
+    public bool AllowMultipleInSingleFrame = false;
 
     public bool BypassEffects = false;
     public bool BypassListenerEffects = false;

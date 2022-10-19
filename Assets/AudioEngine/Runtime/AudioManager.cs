@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class AudioManager : MonoBehaviour
 {
@@ -81,6 +82,7 @@ public class AudioManager : MonoBehaviour
     private Queue<AudioEmitterInternal> _pooledEmitters = new Queue<AudioEmitterInternal>();
     private HashSet<AudioBank> _loadedAudioBanks = new HashSet<AudioBank>();
     private Dictionary<string, AudioEventGroup> _audioEventGroups = new Dictionary<string, AudioEventGroup>();
+    private HashSet<AudioEvent> _frameEvents = new HashSet<AudioEvent>();
 
     private int _audioId;
 
@@ -190,6 +192,13 @@ public class AudioManager : MonoBehaviour
     {
         if (ev == null) return default;
 
+        if (!ev.AllowMultipleInSingleFrame)
+        {
+            if (_frameEvents.Contains(ev))
+                return default;
+            _frameEvents.Add(ev);
+        }
+
         var emitter = GetAudioEmitter();
         emitter.SetEvent(ev);
         emitter.MoveTo(target);
@@ -200,6 +209,12 @@ public class AudioManager : MonoBehaviour
     private AudioEmitter PlayAt(AudioEvent ev, Vector3 target)
     {
         if (ev == null) return default;
+        if (!ev.AllowMultipleInSingleFrame)
+        {
+            if (_frameEvents.Contains(ev))
+                return default;
+            _frameEvents.Add(ev);
+        }
 
         var emitter = GetAudioEmitter();
         emitter.SetEvent(ev);
@@ -317,5 +332,12 @@ public class AudioManager : MonoBehaviour
                 LoadAudioBank(bank);
             }
         }
+
+        _frameEvents.Clear();
+    }
+
+    protected void LateUpdate()
+    {
+        _frameEvents.Clear();
     }
 }

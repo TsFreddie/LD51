@@ -8,8 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: IntegerScale
-  m_Shader: {fileID: -6465566751694194690, guid: d92b2889d78c3174d97ccf36912ee11a,
-    type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: d92b2889d78c3174d97ccf36912ee11a, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -46,7 +45,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 8400000, guid: 62218fca348b53a44bc39809bd7daf94, type: 2}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:

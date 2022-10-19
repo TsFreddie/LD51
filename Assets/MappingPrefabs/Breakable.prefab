@@ -73,6 +73,12 @@ MonoBehaviour:
   OnSprite: {fileID: 0}
   OffSound: 
   OnSound: 
+  OffCaption: 
+  OnCaption: 
+  OffCaptionTime: 1
+  OnCaptionTime: 1
+  OffCaptionColor: 1
+  OnCaptionColor: 1
   SpriteRenderer: {fileID: 0}
   Repeatable: 1
 --- !u!114 &6220505625369127250
@@ -87,7 +93,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06d665d22cf521b439e96a692f215780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BreakCount: 4
+  BreakCount: 2
   Animator: {fileID: 6220505625369127251}
   Text: {fileID: 6220505625765003018}
   CollisionCollider: {fileID: 6220505626357234076}
@@ -104,7 +110,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.16666667}
+  m_Offset: {x: 0, y: -0.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -115,7 +121,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.41666666, y: 0.5833333}
+  m_Size: {x: 1, y: 0.14285715}
   m_EdgeRadius: 0
 --- !u!1 &6220505625765003017
 GameObject:
@@ -282,7 +288,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5833333, y: 0.5833333}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!1 &6220505626636635583
 GameObject:

@@ -1,0 +1,655 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3733e79ffb2a08cc3b06b67d02fc0a42, type: 3}
+  m_Name: SoundEffect
+  m_EditorClassIdentifier: 
+  AudioEvents:
+  - EventName: breakable_break
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: 563b61f839b96f342aa6fa20e6efc7c5, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: breakable_jumpInto
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: 01f93f6e0691e8d4da0fafdea049689d, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: button_down
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: 62d21afbea1fffe47bd83b2f23c0d684, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: button_up
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: 62d21afbea1fffe47bd83b2f23c0d684, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 0.95
+    RandomPitchMax: 0.95
+  - EventName: finish_line
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: fcd17e8295774d546868ac5cb3ddbb6a, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: awaiting
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: e24d1479410c78f4aa8e76b2f6196575, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: recording
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: d4a2dd8bbd02e8741a7998020dca2320, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: replaying
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: 1e189959d6f4e96488da35fa7154bd85, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: jump
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: f3a8b7a482b05eb4999d9a21bc2396fd, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: landing
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: e61fad208ae6c434899f358477a67654, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: hidden_spike_show
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: e101a4391350f464a9ce04f643a44141, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 0.95
+    RandomPitchMax: 0.95
+  - EventName: door_open
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: 4e52c41c1444dbb45b07e39e92d4495e, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: die
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: 280d6fdd2c467f646b8135b637e7e753, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: checkpoint
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: bcbb2f1bcad8158489d18845285577db, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: sand
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: 4de58b6fc07865746be5c12f66d78b37, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 0.8
+    RandomPitchMax: 1.2
+  - EventName: ui/select
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: e4d74e73022ee8147968cbf05c9ca062, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: ui/menuin
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: 3f84f89c37dfea94b93661c8084e1d3b, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: ui/menuout
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: 4fdedb1c9c43b194bb548738feced61b, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: reset
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: 751c8ffaef532d34dbf51f376c6c0966, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 688696078657210211, guid: 682dd59b56dc68a42a5f83255d5df867, type: 2}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1
+  - EventName: portal
+    RandomWeight: 1
+    Volume: 1
+    AudioClip: {fileID: 8300000, guid: 949bd23c135ef4849a7929cf56c77a33, type: 3}
+    Priority: 128
+    GroupID: 0
+    Loop: 0
+    StopWhenSourceDies: 0
+    KeepLoopingWhenSourceDies: 0
+    DoNotTrackSourceMovement: 0
+    AllowMultipleInSingleFrame: 0
+    BypassEffects: 0
+    BypassListenerEffects: 0
+    BypassReverbZones: 0
+    DopplerLevel: 1
+    MaxDistance: 500
+    MinDistance: 1
+    Mute: 0
+    OutputAudioMixerGroup: {fileID: 0}
+    PanStereo: 0
+    Spatialize: 0
+    RolloffMode: 0
+    CustomRolloffCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    SpatialBlend: 0
+    ReverbZoneMix: 1
+    RandomPitchMin: 1
+    RandomPitchMax: 1

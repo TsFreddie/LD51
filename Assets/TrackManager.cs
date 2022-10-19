@@ -42,6 +42,8 @@ public class TrackManager : MonoBehaviour
 
     public void UpdateTrack(InputState[] states, int cutOffIndex = -1)
     {
+        if (_activeObjects == null) return;
+
         foreach (var obj in _activeObjects)
         {
             ReleaseActionBar(obj);

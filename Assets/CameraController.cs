@@ -6,23 +6,23 @@ public class CameraController : MonoBehaviour
 {
     public static CameraController Instance { get; private set; }
 
-    private Vector2 _targetPosition;
+    public Vector2 TargetPosition { get; private set; }
 
     public void MoveToTarget(Vector3 target)
     {
-        _targetPosition = target;
+        TargetPosition = target;
     }
 
     public void Awake()
     {
-        _targetPosition = transform.position;
+        TargetPosition = transform.position;
         Instance = this;
     }
 
     public void Update()
     {
         var cameraPos = transform.position;
-        var targetPos = new Vector3(_targetPosition.x, _targetPosition.y, cameraPos.z);
+        var targetPos = new Vector3(TargetPosition.x, TargetPosition.y, cameraPos.z);
         cameraPos = Vector3.Lerp(cameraPos, targetPos, Time.deltaTime * 10.0f);
         transform.position = cameraPos;
     }

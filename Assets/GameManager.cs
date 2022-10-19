@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -33,20 +34,29 @@ public class GameManager : MonoBehaviour
     }
 
     public Animator StateAnimator;
+    public Animator LockBannerAnimator;
     public InputState[] InputRecording;
 
     public TMP_Text Timer;
     public Slider Slider;
     public TrackManager Track;
-    public CanvasGroup Intro;
+    public CanvasGroup MenuGroup;
     public RawImage RenderArea;
     public string FirstLevel;
     public GameObject EndingUI;
     public TMP_Text ResetCounter;
+    public PlayerInput PlayerInput;
+    public Animator TrackAnimator;
 
     public static GameManager Instance { get; private set; }
     public PlayerControl Player;
     public SpriteRenderer PlayerSnapshot;
+
+    public MenuFadeIn TitleGroup;
+    public MenuFadeIn GameGroup;
+    public CanvasGroup PauseGroup;
+    public GameObject PauseFirstSelected;
+
     public int CheckpointProgress { get; private set; }
     public bool SkipInput { get; private set; }
 
@@ -61,6 +71,8 @@ public class GameManager : MonoBehaviour
     public Action OnFixedUpdate;
     public Action OnFixedUpdateWorld;
     public Action OnWorldStart;
+    public Action OnWorldPause;
+    public Action OnWorldResume;
 
     public GameState State = GameState.Inactive;
 
@@ -72,14 +84,22 @@ public class GameManager : MonoBehaviour
     private static readonly int AnimReplayingToAwaiting = Animator.StringToHash("Replay-Await");
     private static readonly int AnimRecordingToAwaiting = Animator.StringToHash("Record-Await");
     private static readonly int AnimReplayingToReplaying = Animator.StringToHash("Replay-Replay");
+    private static readonly int AnimSuccess = Animator.StringToHash("Success");
+    private static readonly int AnimFailed = Animator.StringToHash("Failed");
     private static readonly int AnimInactive = Animator.StringToHash("Inactive");
 
     private bool _died = false;
+    private bool _manualReset = false;
 
     private static readonly int ShaderEffectFactor = Shader.PropertyToID("_EffectFactor");
     private static readonly int ShaderTransition = Shader.PropertyToID("_Transition");
 
     private Scene _loadedLevel;
+    private bool _gameRunning;
+    private bool _pausing;
+
+    private float _resetHeldTime;
+    private Vector2 _initCameraPosition;
 
     protected async void Awake()
     {
@@ -98,6 +118,11 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
         if (SceneManager.sceneCount == 2)
         {
+            TitleGroup.FadeOut();
+            GameGroup.FadeIn();
+            PauseGroup.alpha = 0;
+            _gameRunning = true;
+            InputManager.Instance.SetGameMode();
             _loadedLevel = SceneManager.GetSceneAt(1);
             await UniTask.Delay(1000);
             StartGame();
@@ -105,61 +130,20 @@ public class GameManager : MonoBehaviour
         }
 #endif
 
-        // Intro sequence
-        Intro.gameObject.SetActive(true);
-        Intro.alpha = 0.0f;
-
+        // Wait 1 second before activating menu
         await UniTask.Delay(1000);
-
-        while (Intro.alpha < 1.0f)
-        {
-            Intro.alpha += Time.deltaTime * 2.0f;
-            await UniTask.Yield();
-        }
-        Intro.alpha = 1.0f;
-
-        await UniTask.Delay(2500);
-
-        while (Intro.alpha > 0.0f)
-        {
-            Intro.alpha -= Time.deltaTime * 2.0f;
-            await UniTask.Yield();
-        }
-        Intro.gameObject.SetActive(false);
-        Intro.alpha = 0.0f;
-        LoadLevel(FirstLevel);
-    }
-
-    private bool CheckLevelSelect()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
-        {
-            FirstLevel = "1-1";
-            return true;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
-        {
-            FirstLevel = "2-1";
-            return true;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
-        {
-            FirstLevel = "3-1";
-            return true;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
-        {
-            FirstLevel = "4-1";
-            return true;
-        }
-        return false;
+        MenuGroup.interactable = true;
     }
 
     private float _transition = 0.0f;
     private int _resetCount = 0;
 
-    private async void LoadLevel(string level)
+    public async void LoadLevel(string level)
     {
+        TitleGroup.FadeOut();
+        GameGroup.FadeIn();
+        _gameRunning = true;
+        InputManager.Instance.SetGameMode();
         CheckpointProgress = 0;
         LockWorld();
 
@@ -195,19 +179,57 @@ public class GameManager : MonoBehaviour
         StartGame();
     }
 
+    private AudioEmitter _resetEmitter;
+
     protected void Update()
     {
-        CheckLevelSelect();
+        if (!_gameRunning) return;
+
+        if (PlayerInput.actions["Pause"].WasPressedThisFrame())
+        {
+            if (!_pausing)
+            {
+                if (State != GameState.Inactive) Pause();
+            }
+            else
+            {
+                Unpause();
+            }
+        }
+
         Timer.text = $"{Frame * Time.fixedDeltaTime:0.00}";
         Slider.value = Frame / ((float)InputRecording.Length - 1);
 
-        if (State != GameState.Inactive && Input.GetKeyDown(KeyCode.R))
+        var canReset = State != GameState.Awaiting && State != GameState.Inactive && !_pausing;
+        if (canReset)
         {
-            ResetGame();
+            if (PlayerInput.actions["Reset"].WasPressedThisFrame())
+            {
+                TrackAnimator.Play("Erase");
+                _resetEmitter = AudioManager.Instance.Play("reset");
+                _resetHeldTime = Time.unscaledTime;
+            }
+
+            if (PlayerInput.actions["Reset"].IsPressed() && Time.unscaledTime - _resetHeldTime >= 1.0f)
+            {
+                ResetGame();
+                _resetHeldTime = float.MinValue;
+            }
         }
 
-        _enterDown |= Input.GetKeyDown(KeyCode.Return);
-        _actionDown |= Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A);
+        if (!canReset || PlayerInput.actions["Reset"].WasReleasedThisFrame())
+        {
+            if (_resetEmitter.IsValid())
+            {
+                _resetEmitter.Stop();
+            }
+            TrackAnimator.Play("Idle");
+        }
+
+        if (_pausing) return;
+
+        _enterDown |= PlayerInput.actions["Play"].WasPressedThisFrame();
+        _actionDown |= PlayerInput.actions["Move"].WasPressedThisFrame() || PlayerInput.actions["Jump"].WasPressedThisFrame();
     }
 
     public void StartGame()
@@ -217,6 +239,9 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("Game is not inactive, can not start game");
             return;
         }
+
+        Player.SaveInitState();
+        _initCameraPosition = CameraController.Instance.TargetPosition;
 
         if (Player != null) Player.Animator.enabled = true;
         Track.SpawnDropTrack(InputRecording, 0);
@@ -228,7 +253,7 @@ public class GameManager : MonoBehaviour
         SetVoidMode();
         // if (Player != null) Player.CancelVanish();
         HideSnapshot();
-        AudioManager.Instance.Play("startgame");
+        AudioManager.Instance.Play("awaiting");
     }
 
     public void LockWorld()
@@ -242,6 +267,8 @@ public class GameManager : MonoBehaviour
 
     public void ResetGame()
     {
+        LockBannerAnimator.SetBool(AnimFailed, false);
+        LockBannerAnimator.SetBool(AnimSuccess, false);
         if (Player != null) Player.Animator.enabled = true;
         Track.SpawnDropTrack(InputRecording, 0);
         for (var i = 0; i < InputRecording.Length; i++) InputRecording[i] = default;
@@ -266,18 +293,76 @@ public class GameManager : MonoBehaviour
 
     public void FixedUpdate()
     {
-        DoFixedUpdate();
+        if (_gameRunning && !_pausing)
+            DoFixedUpdate();
 
         _enterDown = false;
         _actionDown = false;
     }
 
+    public void Pause()
+    {
+        if (_gameRunning)
+        {
+            _pausing = true;
+            InputManager.Instance.NullifyMenu();
+            InputManager.Instance.OpenMenu(PauseGroup, PauseFirstSelected);
+            PauseGroup.interactable = true;
+            PauseGroup.alpha = 1;
+            InputManager.Instance.SetMenuMode();
+        }
+    }
+
+    public void Unpause()
+    {
+        if (_pausing)
+        {
+            _pausing = false;
+            PauseGroup.interactable = false;
+            PauseGroup.alpha = 0;
+            InputManager.Instance.SetGameMode();
+        }
+    }
+
+    public async void ReturnToMainMenu()
+    {
+        // TODO: unload scene, show title screen
+        _pausing = false;
+        _gameRunning = false;
+
+        PauseGroup.alpha = 0;
+        PauseGroup.interactable = false;
+
+        while (_transition < 1.0f)
+        {
+            _transition += Time.deltaTime;
+            RenderArea.material.SetFloat(ShaderTransition, _transition);
+            await UniTask.Yield();
+        }
+
+        if (_loadedLevel.IsValid())
+            await SceneManager.UnloadSceneAsync(_loadedLevel);
+
+        _transition = 0.0f;
+        RenderArea.material.SetFloat(ShaderTransition, 0.0f);
+        GameGroup.FadeOut();
+        TitleGroup.FadeIn();
+
+        InputManager.Instance.NullifyMenu();
+        await UniTask.Delay(500);
+        InputManager.Instance.SwitchToTitleMenu();
+        
+        for (var i = 0; i < InputRecording.Length; i++) InputRecording[i] = default;
+    }
+
     public void DoReplayLogic()
     {
-        if (!_enterDown)
-            StepFrame();
-        if (Frame == InputRecording.Length || _enterDown)
+        StepFrame();
+
+        var shouldReset = Frame == InputRecording.Length || _enterDown;
+        if (shouldReset)
         {
+            _manualReset = _enterDown;
             ResetWorld();
             if (State == GameState.Recording)
             {
@@ -295,10 +380,12 @@ public class GameManager : MonoBehaviour
 
     public void DoFixedUpdate()
     {
+        var moveInput = PlayerInput.actions["Move"].ReadValue<float>();
+
         CurrentInput = !SkipInput ? new InputState
         {
-            Move = (Input.GetKey(KeyCode.D) ? 1 : 0) + (Input.GetKey(KeyCode.A) ? -1 : 0),
-            Jump = Input.GetKey(KeyCode.Space),
+            Move = moveInput > 0 ? 1 : moveInput < 0 ? -1 : 0,
+            Jump = PlayerInput.actions["Jump"].IsPressed(),
         } : default;
 
         if (State == GameState.Awaiting && _actionDown)
@@ -312,7 +399,7 @@ public class GameManager : MonoBehaviour
             AudioManager.Instance.Play("recording");
         }
 
-        if (!_died && State == GameState.Replaying && _actionDown && Frame > 30)
+        if (!_died && State == GameState.Replaying && _actionDown && (_manualReset || Frame > 30))
         {
             State = GameState.Recording;
             if (Player != null) Player.StartVanish();
@@ -321,6 +408,8 @@ public class GameManager : MonoBehaviour
             Track.SpawnDropTrack(InputRecording, Frame);
             for (var i = Frame; i < InputRecording.Length; i++) InputRecording[i] = default;
             StateAnimator.Play(AnimReplayingToRecording);
+            LockBannerAnimator.SetBool(AnimFailed, false);
+            LockBannerAnimator.SetBool(AnimSuccess, false);
             AudioManager.Instance.Play("recording");
             _resetCount++;
             ResetCounter.text = _resetCount.ToString();
@@ -334,7 +423,7 @@ public class GameManager : MonoBehaviour
         if (State == GameState.Replaying || State == GameState.Recording)
         {
             DoReplayLogic();
-            if (State == GameState.Replaying && Input.GetKey(KeyCode.F))
+            if (State == GameState.Replaying && PlayerInput.actions["FastForward"].IsPressed())
             {
                 DoReplayLogic();
             }
@@ -357,12 +446,14 @@ public class GameManager : MonoBehaviour
         if (Player != null) Player.CancelVanish();
         OnReset?.Invoke();
         SkipInput = false;
+        CameraController.Instance.MoveToTarget(_initCameraPosition);
     }
 
     private void StepFrame()
     {
+        Physics2D.SyncTransforms();
         OnFixedUpdate?.Invoke();
-
+        Physics2D.SyncTransforms();
         OnFixedUpdateWorld?.Invoke();
         Frame++;
     }
@@ -450,9 +541,15 @@ public class GameManager : MonoBehaviour
         if (!IsReplaying)
         {
             AudioManager.Instance.Play("checkpoint");
+            CaptionManager.Instance.ShowCaption("success", 2.0f, CaptionType.Item);
+            LockBannerAnimator.SetBool(AnimSuccess, true);
             return;
         }
         AudioManager.Instance.Play("finish_line");
+        CaptionManager.Instance.ShowCaption("advance", 2.0f, CaptionType.Success);
+        LockBannerAnimator.SetBool(AnimFailed, false);
+        LockBannerAnimator.SetBool(AnimSuccess, false);
+
         GameManager.Instance.LoadLevel(levelName);
     }
 
@@ -460,6 +557,8 @@ public class GameManager : MonoBehaviour
     {
         if (_died) return;
         AudioManager.Instance.Play("die");
+        CaptionManager.Instance.ShowCaption("failed", 2.0f, CaptionType.Fail);
+        if (!IsReplaying) LockBannerAnimator.SetBool(AnimFailed, true);
         SkipInput = true;
         _died = true;
 
@@ -473,8 +572,12 @@ public class GameManager : MonoBehaviour
     public async void Checkpoint(Checkpoint checkpoint)
     {
         AudioManager.Instance.Play("checkpoint");
+        CaptionManager.Instance.ShowCaption("success", 2.0f, CaptionType.Item);
+        if (!IsReplaying) LockBannerAnimator.SetBool(AnimSuccess, true);
         if (IsReplaying)
         {
+            LockBannerAnimator.SetBool(AnimFailed, false);
+            LockBannerAnimator.SetBool(AnimSuccess, false);
             CheckpointProgress = checkpoint.CheckpointProgress;
             CameraController.Instance.MoveToTarget(checkpoint.CameraPosition.position);
             Player.SaveInitState();
@@ -486,14 +589,13 @@ public class GameManager : MonoBehaviour
             await UniTask.Delay(1500);
 
             StartGame();
-
         }
 
         SkipInput = true;
         Player.LockPlayer();
     }
 
-    public async void Ending()
+    public void Ending()
     {
         LockWorld();
         SetVoidMode();

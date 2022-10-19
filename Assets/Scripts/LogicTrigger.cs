@@ -10,6 +10,12 @@ public class LogicTrigger : MonoBehaviour
 
     public string OffSound;
     public string OnSound;
+    public string OffCaption;
+    public string OnCaption;
+    public float OffCaptionTime = 1.0f;
+    public float OnCaptionTime = 1.0f;
+    public CaptionType OffCaptionColor = CaptionType.Item;
+    public CaptionType OnCaptionColor = CaptionType.Item;
 
     public SpriteRenderer SpriteRenderer;
 
@@ -70,7 +76,10 @@ public class LogicTrigger : MonoBehaviour
                 }
                 _triggered = true;
                 if (!string.IsNullOrEmpty(OnSound))
+                {
                     AudioManager.Instance.Play(OnSound);
+                    if (!string.IsNullOrEmpty(OnCaption)) CaptionManager.Instance.ShowCaption(OnCaption, OnCaptionTime, OnCaptionColor);
+                }
             }
         }
         else
@@ -86,7 +95,10 @@ public class LogicTrigger : MonoBehaviour
                     SpriteRenderer.enabled = _offSprite != null;
                 }
                 if (!string.IsNullOrEmpty(OffSound))
+                {
                     AudioManager.Instance.Play(OffSound);
+                    if (!string.IsNullOrEmpty(OffSound)) CaptionManager.Instance.ShowCaption(OffSound, OffCaptionTime, OffCaptionColor);
+                }
             }
         }
     }

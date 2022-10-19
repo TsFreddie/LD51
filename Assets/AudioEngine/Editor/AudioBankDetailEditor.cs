@@ -108,6 +108,7 @@ public class AudioBankDetailEditor : EditorWindow
         _audioEvent.StopWhenSourceDies = EditorGUILayout.Toggle(new GUIContent("Stop When Source Dies"), _audioEvent.StopWhenSourceDies);
         _audioEvent.KeepLoopingWhenSourceDies = EditorGUILayout.Toggle(new GUIContent("Loop Forever"), _audioEvent.KeepLoopingWhenSourceDies);
         _audioEvent.DoNotTrackSourceMovement = EditorGUILayout.Toggle(new GUIContent("Detached"), _audioEvent.DoNotTrackSourceMovement);
+        _audioEvent.AllowMultipleInSingleFrame = EditorGUILayout.Toggle(new GUIContent("Allow Multiple In Same Frame"), _audioEvent.AllowMultipleInSingleFrame);
         EditorGUILayout.Separator();
         var oldPitch = _audioSourceProxy.pitch;
         var builtinEditor = Editor.CreateEditor(_audioSourceProxy);

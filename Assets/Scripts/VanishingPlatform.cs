@@ -32,14 +32,13 @@ public class VanishingPlatform : Switchable
 
     private void WorldUpdate()
     {
-        var breakFrames = Mathf.RoundToInt(0.25f / Time.fixedDeltaTime);
+        var breakFrames = Mathf.RoundToInt(0.15f / Time.fixedDeltaTime);
         if (_vanishingFrame >= 0)
         {
             var deltaFrame = GameManager.Instance.Frame - _vanishingFrame;
             if (!_animated && deltaFrame > breakFrames - 2)
             {
                 _animated = true;
-                AudioManager.Instance.Play("vanishing_platform_break");
                 Animator.SetBool("Break", true);
             }
 
@@ -54,6 +53,8 @@ public class VanishingPlatform : Switchable
     {
         if (_vanishingFrame < 0)
         {
+            CaptionManager.Instance.ShowCaption("sand", 1.0f, CaptionType.Item);
+            AudioManager.Instance.Play("sand");
             _vanishingFrame = GameManager.Instance.Frame;
         }
     }
