@@ -118,8 +118,8 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
         if (SceneManager.sceneCount == 2)
         {
-            TitleGroup.FadeOut();
-            GameGroup.FadeIn();
+            TitleGroup.FadeOutSilently();
+            GameGroup.FadeInSilently();
             PauseGroup.alpha = 0;
             _gameRunning = true;
             InputManager.Instance.SetGameMode();
@@ -140,8 +140,8 @@ public class GameManager : MonoBehaviour
 
     public async void LoadLevel(string level)
     {
-        TitleGroup.FadeOut();
-        GameGroup.FadeIn();
+        TitleGroup.FadeOutSilently();
+        GameGroup.FadeInSilently();
         _gameRunning = true;
         InputManager.Instance.SetGameMode();
         CheckpointProgress = 0;
@@ -326,7 +326,6 @@ public class GameManager : MonoBehaviour
 
     public async void ReturnToMainMenu()
     {
-        // TODO: unload scene, show title screen
         _pausing = false;
         _gameRunning = false;
 
@@ -345,14 +344,22 @@ public class GameManager : MonoBehaviour
 
         _transition = 0.0f;
         RenderArea.material.SetFloat(ShaderTransition, 0.0f);
-        GameGroup.FadeOut();
-        TitleGroup.FadeIn();
+        GameGroup.FadeOutSilently();
+        TitleGroup.FadeInSilently();
 
         InputManager.Instance.NullifyMenu();
         await UniTask.Delay(500);
         InputManager.Instance.SwitchToTitleMenu();
         
         for (var i = 0; i < InputRecording.Length; i++) InputRecording[i] = default;
+        Frame = 0;
+        _resetCount = 0;
+        ResetCounter.text = _resetCount.ToString();
+        _enterDown = false;
+        _actionDown = false;
+        PlayerSnapshot.sprite = null;
+        PlayerSnapshot.color = Color.clear;
+
     }
 
     public void DoReplayLogic()

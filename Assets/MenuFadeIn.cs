@@ -28,7 +28,7 @@ public class MenuFadeIn : MonoBehaviour
                 Group.alpha = 1;
             }
         }
-        
+
         InputManager.Instance.OnBack += OnBack;
     }
 
@@ -45,13 +45,18 @@ public class MenuFadeIn : MonoBehaviour
         InputManager.Instance.OnBack -= OnBack;
     }
 
-    public async void FadeIn()
+    public void FadeIn()
+    {
+        AudioManager.Instance.Play("ui/menuin");
+        FadeInSilently();
+    }
+
+    public async void FadeInSilently()
     {
         _overriden = true;
         _direction = 1;
         Group.interactable = true;
         gameObject.SetActive(true);
-        AudioManager.Instance.Play("ui/menuin");
         while (Group.alpha < 1.0f)
         {
             var alpha = Group.alpha;
@@ -67,12 +72,17 @@ public class MenuFadeIn : MonoBehaviour
         _direction = 0;
     }
 
-    public async void FadeOut()
+    public void FadeOut()
+    {
+        AudioManager.Instance.Play("ui/menuout");
+        FadeOutSilently();
+    }
+
+    public async void FadeOutSilently()
     {
         _overriden = true;
         _direction = -1;
         Group.interactable = false;
-        AudioManager.Instance.Play("ui/menuout");
         while (Group.alpha > 0.0f)
         {
             var alpha = Group.alpha;
